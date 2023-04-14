@@ -63,7 +63,7 @@ public class MovieListServlet extends HttpServlet {
 
                 //GENERATE 3 STARS FOR EACH MOVIE
                 String starString = "";
-                String starQuery = "SELECT group_concat(name) as names FROM (SELECT starId FROM stars_in_movies as sim " +
+                String starQuery = "SELECT group_concat(name) as names, group_concat(starId) as ids FROM (SELECT starId FROM stars_in_movies as sim " +
                         "WHERE movieId = \"" + top20.getString("id") + "\" LIMIT 3) as mS, " +
                         "stars WHERE starId = id";
                 stars = starStatement.executeQuery(starQuery);
@@ -77,6 +77,7 @@ public class MovieListServlet extends HttpServlet {
                 String movie_rating = top20.getString("rating");
                 String movie_genre = genres.getString("names");
                 String movie_stars = stars.getString("names");
+                String star_ids = stars.getString("ids");
 
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("movie_id", movie_id);
@@ -86,6 +87,7 @@ public class MovieListServlet extends HttpServlet {
                 jsonObject.addProperty("movie_genre", movie_genre);
                 jsonObject.addProperty("movie_rating", movie_rating);
                 jsonObject.addProperty("movie_stars", movie_stars);
+                jsonObject.addProperty("star_ids", star_ids);
 
 
                 jsonArray.add(jsonObject);

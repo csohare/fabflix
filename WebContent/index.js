@@ -23,6 +23,11 @@ function handleStarResult(resultData) {
 
     // Iterate through resultData, no more than 10 entries
     for (let i = 0; i < resultData.length; i++) {
+        let star_ids = resultData[i]["star_ids"];
+        const ids = star_ids.split(",");
+
+        let star_names = resultData[i]["movie_stars"]
+        const names = star_names.split(",");
 
         // Concatenate the html tags with resultData jsonObject
         let rowHTML = "";
@@ -37,7 +42,17 @@ function handleStarResult(resultData) {
         rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_director"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_genre"] + "</th>"
-        rowHTML += "<th>" + resultData[i]["movie_stars"] + "</th>"
+
+        rowHTML += "<th>";
+        for(let i = 0; i < ids.length; i++) {
+            rowHTML += '<a href="single-star.html?id=' + ids[i] + '">'
+            + names[i] + "</a>";
+            if(i != ids.length - 1) {
+                rowHTML += ", "
+            }
+        }
+        rowHTML += "</th>";
+
         rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
         rowHTML += "</tr>";
 
