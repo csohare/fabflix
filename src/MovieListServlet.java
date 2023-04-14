@@ -16,10 +16,10 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 
-// Declaring a WebServlet called StarsServlet, which maps to url "/api/stars"
+// Declaring a WebServlet called Statop20Servlet, which maps to url "/api/statop20"
 @WebServlet(name = "MovieListServlet", urlPatterns = "/api/MovieList")
 public class MovieListServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVetop20ionUID = 1L;
 
     // Create a dataSource which registered in web.
     private DataSource dataSource;
@@ -31,50 +31,53 @@ public class MovieListServlet extends HttpServlet {
             e.printStackTrace();
         }
     }
-
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        response.setContentType("application/json"); // Response mime type
-
-        // Output stream to STDOUT
+        response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
-        // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()) {
 
-            // Declare our statement
             Statement statement = conn.createStatement();
+            Statement genreStatement = conn.createStatement();
 
-            String query = "SELECT id, title, year, director, rating " +
+            String top20Query = "SELECT id, title, year, director, rating " +
                     "FROM movies, ratings WHERE movies.id = ratings.movieId ORDER BY rating DESC LIMIT 20";
 
-            // Perform the query
-            ResultSet rs = statement.executeQuery(query);
-
+            ResultSet top20 = statement.executeQuery(top20Query);
             JsonArray jsonArray = new JsonArray();
 
-            // Iterate through each row of rs
-            while (rs.next()) {
-                String movie_id = rs.getString("id");
-                String movie_title = rs.getString("title");
-                String movie_year = rs.getString("year");
-                String movie_director = rs.getString("director");
-                String movie_rating = rs.getString("rating");
 
-                // Create a JsonObject based on the data we retrieve from rs
+
+            ResultSet genres;
+            while (top20.next()) {
+                String genreQuery = "SELECT name FROM (SELECT genreId FROM genres_in_movies " +
+                        "WHERE movieId = \"" + top20.getString("id") +
+                        "\" LIMIT 3) as mG, genres WHERE id = genreId";
+                genres = genreStatement.executeQuery(genreQuery);
+                String genreString = "";
+                while(genres.next()) {
+                    genreString += genres.getString("name") + " ";
+                }
+
+                String movie_id = top20.getString("id");
+                String movie_title = top20.getString("title");
+                String movie_year = top20.getString("year");
+                String movie_director = top20.getString("director");
+                String movie_rating = top20.getString("rating");
+
+
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("movie_id", movie_id);
                 jsonObject.addProperty("movie_title", movie_title);
                 jsonObject.addProperty("movie_year", movie_year);
                 jsonObject.addProperty("movie_director", movie_director);
+                jsonObject.addProperty("movie_genre", genreString);
                 jsonObject.addProperty("movie_rating", movie_rating);
 
                 jsonArray.add(jsonObject);
             }
-            rs.close();
+            top20.close();
             statement.close();
 
             // Log to localhost log
