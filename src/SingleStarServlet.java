@@ -25,7 +25,7 @@ public class SingleStarServlet extends HttpServlet {
 
     public void init(ServletConfig config) {
         try {
-            dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/moviedbexample");
+            dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/moviedb");
         } catch (NamingException e) {
             e.printStackTrace();
         }
@@ -50,22 +50,12 @@ public class SingleStarServlet extends HttpServlet {
 
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()) {
-            // Get a connection from dataSource
 
-            // Construct a query with parameter represented by "?"
             String query = "SELECT * from stars as s, stars_in_movies as sim, movies as m " +
                     "where m.id = sim.movieId and sim.starId = s.id and s.id = ?";
-
-            // Declare our statement
             PreparedStatement statement = conn.prepareStatement(query);
-
-            // Set the parameter represented by "?" in the query to the id we get from url,
-            // num 1 indicates the first "?" in the query
             statement.setString(1, id);
-
-            // Perform the query
             ResultSet rs = statement.executeQuery();
-
             JsonArray jsonArray = new JsonArray();
 
             // Iterate through each row of rs
