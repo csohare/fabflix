@@ -40,6 +40,7 @@ public class MovieListServlet extends HttpServlet {
 
             Statement statement = conn.createStatement();
             Statement genreStatement = conn.createStatement();
+            Statement starStatement = conn.createStatement();
 
             String top20Query = "SELECT id, title, year, director, rating " +
                     "FROM movies, ratings WHERE movies.id = ratings.movieId ORDER BY rating DESC LIMIT 20";
@@ -50,30 +51,42 @@ public class MovieListServlet extends HttpServlet {
 
 
             ResultSet genres;
+            ResultSet stars;
             while (top20.next()) {
-                String genreQuery = "SELECT name FROM (SELECT genreId FROM genres_in_movies " +
+                // GENERATE 3 GENRES FOR EACH MOVIE
+                String genreString = "";
+                String genreQuery = "SELECT group_concat(name) as names FROM (SELECT genreId FROM genres_in_movies " +
                         "WHERE movieId = \"" + top20.getString("id") +
                         "\" LIMIT 3) as mG, genres WHERE id = genreId";
                 genres = genreStatement.executeQuery(genreQuery);
-                String genreString = "";
-                while(genres.next()) {
-                    genreString += genres.getString("name") + " ";
-                }
+                genres.next();
+
+                //GENERATE 3 STARS FOR EACH MOVIE
+                String starString = "";
+                String starQuery = "SELECT group_concat(name) as names FROM (SELECT starId FROM stars_in_movies as sim " +
+                        "WHERE movieId = \"" + top20.getString("id") + "\" LIMIT 3) as mS, " +
+                        "stars WHERE starId = id";
+                stars = starStatement.executeQuery(starQuery);
+                stars.next();
+
 
                 String movie_id = top20.getString("id");
                 String movie_title = top20.getString("title");
                 String movie_year = top20.getString("year");
                 String movie_director = top20.getString("director");
                 String movie_rating = top20.getString("rating");
-
+                String movie_genre = genres.getString("names");
+                String movie_stars = stars.getString("names");
 
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("movie_id", movie_id);
                 jsonObject.addProperty("movie_title", movie_title);
                 jsonObject.addProperty("movie_year", movie_year);
                 jsonObject.addProperty("movie_director", movie_director);
-                jsonObject.addProperty("movie_genre", genreString);
+                jsonObject.addProperty("movie_genre", movie_genre);
                 jsonObject.addProperty("movie_rating", movie_rating);
+                jsonObject.addProperty("movie_stars", movie_stars);
+
 
                 jsonArray.add(jsonObject);
             }
