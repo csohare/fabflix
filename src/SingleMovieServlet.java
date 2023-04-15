@@ -16,12 +16,11 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 
-// Declaring a WebServlet called Statop20Servlet, which maps to url "/api/statop20"
+
 @WebServlet(name = "SingleMovieServlet", urlPatterns = "/api/single-movie")
 public class SingleMovieServlet extends HttpServlet {
-    private static final long serialVetop20ionUID = 1L;
+    private static final long serialVemovieInfoionUID = 1L;
 
-    // Create a dataSource which registered in web.
     private DataSource dataSource;
 
     public void init(ServletConfig config) {
@@ -45,44 +44,22 @@ public class SingleMovieServlet extends HttpServlet {
         try (Connection conn = dataSource.getConnection()) {
 
             Statement statement = conn.createStatement();
-            Statement genreStatement = conn.createStatement();
-            Statement starStatement = conn.createStatement();
+            String singleMovieQuery ="SELECT * FROM (SELECT * FROM movies WHERE movies.id = 'tt0498362') as movieInfo, (SELECT  group_concat(starId) as starIds , group_concat(starName) as starNames, genreIds, genreNames FROM (SELECT starId, name as starName FROM stars_in_movies as sim, stars WHERE sim.movieId = 'tt0498362' and stars.id = sim.starId) as movieStars, (SELECT group_concat(genreId) as genreIds, group_concat(name) as genreNames FROM genres_in_movies as gim, genres WHERE gim.movieId = 'tt0498362' and genres.id = gim.genreId) as genreStars GROUP BY genreIds, genreNames) as mstarGenre";
 
-            String top20Query ="SELECT * FROM (SELECT * FROM movies WHERE movies.id = 'tt0498362') as movieInfo, (SELECT  group_concat(starId) as starIds , group_concat(starName) as starNames, genreIds, genreNames FROM (SELECT starId, name as starName FROM stars_in_movies as sim, stars WHERE sim.movieId = 'tt0498362' and stars.id = sim.starId) as movieStars, (SELECT group_concat(genreId) as genreIds, group_concat(name) as genreNames FROM genres_in_movies as gim, genres WHERE gim.movieId = 'tt0498362' and genres.id = gim.genreId) as genreStars GROUP BY genreIds, genreNames) as mstarGenre";
-
-            ResultSet top20 = statement.executeQuery(top20Query);
+            ResultSet movieInfo = statement.executeQuery(singleMovieQuery);
             JsonArray jsonArray = new JsonArray();
 
+            while (movieInfo.next()) {
+                
+                String movie_id = movieInfo.getString("id");
+                String movie_title = movieInfo.getString("title");
+                String movie_year = movieInfo.getString("year");
+                String movie_director = movieInfo.getString("director");
+                String movie_rating = movieInfo.getString("starIds");
+                String movie_starNames = movieInfo.getString("starNames");
+                String movie_genreNames = 
 
-
-            ResultSet genres;
-            ResultSet stars;
-            while (top20.next()) {
-                // GENERATE 3 GENRES FOR EACH MOVIE
-                String genreString = "";
-                String genreQuery = "SELECT group_concat(name) as names FROM (SELECT genreId FROM genres_in_movies " +
-                        "WHERE movieId = \"" + top20.getString("id") +
-                        "\" LIMIT 3) as mG, genres WHERE id = genreId";
-                genres = genreStatement.executeQuery(genreQuery);
-                genres.next();
-
-                //GENERATE 3 STARS FOR EACH MOVIE
-                String starString = "";
-                String starQuery = "SELECT group_concat(name) as names, group_concat(starId) as ids FROM (SELECT starId FROM stars_in_movies as sim " +
-                        "WHERE movieId = \"" + top20.getString("id") + "\" LIMIT 3) as mS, " +
-                        "stars WHERE starId = id";
-                stars = starStatement.executeQuery(starQuery);
-                stars.next();
-
-
-                String movie_id = top20.getString("id");
-                String movie_title = top20.getString("title");
-                String movie_year = top20.getString("year");
-                String movie_director = top20.getString("director");
-                String movie_rating = top20.getString("rating");
-                String movie_genre = genres.getString("names");
-                String movie_stars = stars.getString("names");
-                String star_ids = stars.getString("ids");
+               
 
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("movie_id", movie_id);
@@ -97,7 +74,7 @@ public class SingleMovieServlet extends HttpServlet {
 
                 jsonArray.add(jsonObject);
             }
-            top20.close();
+            movieInfo.close();
             statement.close();
 
             // Log to localhost log
