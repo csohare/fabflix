@@ -36,6 +36,12 @@ public class SingleMovieServlet extends HttpServlet {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
+        // Retrieve parameter id from url request.
+        String id = request.getParameter("id");
+
+        // The log message can be found in localhost log
+        request.getServletContext().log("getting id: " + id);
+
         try (Connection conn = dataSource.getConnection()) {
 
             Statement statement = conn.createStatement();
