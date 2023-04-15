@@ -51,8 +51,8 @@ public class SingleStarServlet extends HttpServlet {
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()) {
 
-            String query = "SELECT group_concat(title) as titles, group_concat(movies.id) as movieIds" +
-            "movies.id, starId, name, birthYear FROM (SELECT * FROM stars_in_movies WHERE starId=" +
+            String query = "SELECT group_concat(title) as titles, group_concat(movies.id) as movieIds," +
+            "name, birthYear FROM (SELECT * FROM stars_in_movies WHERE starId=" +
                     "?) as starMovies, movies, stars WHERE starMovies.movieId=movies.id and " +
                     "starMovies.starId = stars.id GROUP BY starId, name, birthYear";
 
@@ -66,8 +66,8 @@ public class SingleStarServlet extends HttpServlet {
 
                 String titles = rs.getString("titles");
                 String movieIds = rs.getString("movieIds");
-                String starId = rs.getString("starId");
                 String name = rs.getString("name");
+                String birthYear = rs.getString("birthYear");
 
 
                 // Create a JsonObject based on the data we retrieve from rs
@@ -75,8 +75,8 @@ public class SingleStarServlet extends HttpServlet {
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("titles", titles);
                 jsonObject.addProperty("movieIds", movieIds);
-                jsonObject.addProperty("starId", starId);
-                jsonObject.addProperty("titles", titles);
+                jsonObject.addProperty("name", name);
+                jsonObject.addProperty("birthYear", birthYear);
                 jsonArray.add(jsonObject);
             }
             rs.close();
