@@ -39,31 +39,33 @@ function getParameterByName(target) {
 function handleResult(resultData) {
 
     console.log("handleResult: populating star info from resultData");
-
-    // populate the star info h3
-    // find the empty h3 body by id "star_info"
-    let starNameElement= jQuery("#star_name");
-
-    // append two html <p> created to the h3 body, which will refresh the page
-
     console.log("handleResult: populating movie table from resultData");
-
-    // Populate the star table
-    // Find the empty table body by id "movie_table_body"
-    let movieTableBodyElement = jQuery("#movie_table_body");
+    let starNameElement= jQuery("#star_name");
+    let starTableBodyElement = jQuery("#star_table_body");
+    let movieIds = resultData[0]["movieIds"];
+    let idArray = movieIds.split(",");
+    let movieTitles = resultData[0]["titles"];
+    const titleArray = movieTitles.split(",");
 
     // Concatenate the html tags with resultData jsonObject to create table rows
-    for (let i = 0; i < Math.min(10, resultData.length); i++) {
-        let rowHTML = "";
-        rowHTML += "<tr>";
-        rowHTML += "<th>" + resultData[i]["movie_title"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_director"] + "</th>";
-        rowHTML += "</tr>";
+    let rowHTML = "";
+    rowHTML += "<tr>";
 
-        // Append the row created to the table body, which will refresh the page
-        movieTableBodyElement.append(rowHTML);
+    rowHTML += "<th>";
+    if(resultData[0]["birthYear"] != null) {rowHTML += resultData[0]["birthYear"] + "</th>"}
+    else{rowHTML += "N/A</th>"}
+
+    rowHTML += "<th>"
+    for(let i = 0; i < titleArray.length; i++) {
+        rowHTML += '<a href="single-movie.html?id=' + idArray[i] + '">' + titleArray[i];
+        if(i != titleArray.length - 1) {rowHTML += ", ";}
+        rowHTML += "</a>";
     }
+    rowHTML += "</tr>";
+
+    // Append the row created to the table body, which will refresh the page
+    starTableBodyElement.append(rowHTML);
+    starNameElement.append(resultData[0]["name"]);
 }
 
 /**
