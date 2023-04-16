@@ -13,15 +13,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 
 
-// Declaring a WebServlet called Statop20Servlet, which maps to url "/api/statop20"
+
 @WebServlet(name = "SingleMovieServlet", urlPatterns = "/api/single-movie")
 public class SingleMovieServlet extends HttpServlet {
-    private static final long serialVetop20ionUID = 1L;
+    private static final long serialVemovieInfoionUID = 1L;
 
-    // Create a dataSource which registered in web.
     private DataSource dataSource;
 
     public void init(ServletConfig config) {
@@ -36,62 +36,53 @@ public class SingleMovieServlet extends HttpServlet {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
+        // Retrieve parameter id from url request.
+        String id = "'" + request.getParameter("id") + "'";
+
+        // The log message can be found in localhost log
+        request.getServletContext().log("getting id: " + id);
+
         try (Connection conn = dataSource.getConnection()) {
 
+            String singleMovieQuery ="SELECT * FROM (SELECT * FROM movies WHERE movies.id = " + id + ") as movieInfo, (SELECT  group_concat(starId) as starIds , group_concat(starName) as starNames, genreIds, genreNames FROM (SELECT starId, name as starName FROM stars_in_movies as sim, stars WHERE sim.movieId = " + id + " and stars.id = sim.starId) as movieStars, (SELECT group_concat(genreId) as genreIds, group_concat(name) as genreNames FROM genres_in_movies as gim, genres WHERE gim.movieId = " + id + " and genres.id = gim.genreId) as genreStars GROUP BY genreIds, genreNames) as mstarGenre;";
+            String ratingQuery = "SELECT rating FROM ratings WHERE ratings.movieId = '" + id + "';";
             Statement statement = conn.createStatement();
-            Statement genreStatement = conn.createStatement();
-            Statement starStatement = conn.createStatement();
+            ResultSet movieInfo = statement.executeQuery(singleMovieQuery);
 
-            String top20Query = "SELECT * FROM  (SELECT * FROM movies WHERE movies.id = 'tt0498362') as movieInfo, (SELECT  group_concat(starId) as starIds , group_concat(starName) as starNames, genreIds, genreNames FROM (SELECT starId, name as starName FROM stars_in_movies as sim, stars WHERE sim.movieId = 'tt0498362' and stars.id = sim.starId) as movieStars, (SELECT group_concat(genreId) as genreIds, group_concat(name) as genreNames FROM genres_in_movies as gim, genres WHERE gim.movieId = 'tt0498362' and genres.id = gim.genreId) as genreStars GROUP BY genreIds, genreNames) as mstarGenre, (SELECT rating FROM ratings where movieId = 'tt0498362') as movieRating";
 
-            ResultSet top20 = statement.executeQuery(top20Query);
+            Statement ratingStatement = conn.createStatement();
+            ResultSet ratingInfo = ratingStatement.executeQuery(ratingQuery);
+            // id, title, year, starIds, starNames, genreIds, genreNames, rating
+
             JsonArray jsonArray = new JsonArray();
 
+            while (movieInfo.next()) {
+                String movie_title = movieInfo.getString("title");
+                String movie_year = movieInfo.getString("year");
+                String movie_director = movieInfo.getString("director");
+                String movie_genre = movieInfo.getString("genreNames");
+                String movie_rating;
+                if(ratingInfo.next()) {
+                    movie_rating = movieInfo.getString("rating");
+                }
+                else {movie_rating = "N/A";}
+                String movie_starNames = movieInfo.getString("starNames");
+                String movie_starIds = movieInfo.getString("starIds");
 
-
-            ResultSet genres;
-            ResultSet stars;
-            while (top20.next()) {
-                // GENERATE 3 GENRES FOR EACH MOVIE
-                String genreString = "";
-                String genreQuery = "SELECT group_concat(name) as names FROM (SELECT genreId FROM genres_in_movies " +
-                        "WHERE movieId = \"" + top20.getString("id") +
-                        "\" LIMIT 3) as mG, genres WHERE id = genreId";
-                genres = genreStatement.executeQuery(genreQuery);
-                genres.next();
-
-                //GENERATE 3 STARS FOR EACH MOVIE
-                String starString = "";
-                String starQuery = "SELECT group_concat(name) as names, group_concat(starId) as ids FROM (SELECT starId FROM stars_in_movies as sim " +
-                        "WHERE movieId = \"" + top20.getString("id") + "\" LIMIT 3) as mS, " +
-                        "stars WHERE starId = id";
-                stars = starStatement.executeQuery(starQuery);
-                stars.next();
-
-
-                String movie_id = top20.getString("id");
-                String movie_title = top20.getString("title");
-                String movie_year = top20.getString("year");
-                String movie_director = top20.getString("director");
-                String movie_rating = top20.getString("rating");
-                String movie_genre = genres.getString("names");
-                String movie_stars = stars.getString("names");
-                String star_ids = stars.getString("ids");
 
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("movie_id", movie_id);
                 jsonObject.addProperty("movie_title", movie_title);
                 jsonObject.addProperty("movie_year", movie_year);
                 jsonObject.addProperty("movie_director", movie_director);
                 jsonObject.addProperty("movie_genre", movie_genre);
                 jsonObject.addProperty("movie_rating", movie_rating);
-                jsonObject.addProperty("movie_stars", movie_stars);
-                jsonObject.addProperty("star_ids", star_ids);
+                jsonObject.addProperty("movie_starNames", movie_starNames);
+                jsonObject.addProperty("movie_starIds", movie_starIds);
 
 
                 jsonArray.add(jsonObject);
             }
-            top20.close();
+            movieInfo.close();
             statement.close();
 
             // Log to localhost log
