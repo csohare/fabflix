@@ -45,7 +45,7 @@ public class SingleMovieServlet extends HttpServlet {
         try (Connection conn = dataSource.getConnection()) {
 
             String singleMovieQuery ="SELECT * FROM (SELECT * FROM movies WHERE movies.id = " + id + ") as movieInfo, (SELECT  group_concat(starId) as starIds , group_concat(starName) as starNames, genreIds, genreNames FROM (SELECT starId, name as starName FROM stars_in_movies as sim, stars WHERE sim.movieId = " + id + " and stars.id = sim.starId) as movieStars, (SELECT group_concat(genreId) as genreIds, group_concat(name) as genreNames FROM genres_in_movies as gim, genres WHERE gim.movieId = " + id + " and genres.id = gim.genreId) as genreStars GROUP BY genreIds, genreNames) as mstarGenre;";
-            String ratingQuery = "SELECT rating FROM ratings WHERE ratings.movieId = '" + id + "';";
+            String ratingQuery = "SELECT rating FROM ratings WHERE ratings.movieId = " + id + ";";
             Statement statement = conn.createStatement();
             ResultSet movieInfo = statement.executeQuery(singleMovieQuery);
 
@@ -63,7 +63,7 @@ public class SingleMovieServlet extends HttpServlet {
                 String movie_genre = movieInfo.getString("genreNames");
                 String movie_rating;
                 if(ratingInfo.next()) {
-                    movie_rating = movieInfo.getString("rating");
+                    movie_rating = ratingInfo.getString("rating");
                 }
                 else {movie_rating = "N/A";}
                 String movie_starNames = movieInfo.getString("starNames");
