@@ -16,6 +16,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel ="stylesheet" href="styles.css">
 
     <title>Single Movie</title>
 </head>
@@ -23,15 +24,13 @@
 <nav class="navbar navbar-dark bg-dark">
     <a class="navbar-brand" href="index.html"><h2>FabFlix</h2></a>
 </nav>
-<h1>Single Movie Page</h1>
 
 <!-- H3 body is left empty here, will be populated with the data retrieved with single-star.js -->
 <!-- single-star.js will find this html element by it's id "star_info" -->
-<h3 id="movie_name"></h3>
-<table id="movie_table"class="table table-striped">
+<h1 id="movie_name" class = "table_header">Movie: </h1>
+<table id="single_movie_table" class="table table-striped">
     <thead>
     <tr>
-        <th>Title</th>
         <th>Year</th>
         <th>Director</th>
         <th>Genres</th>
@@ -42,7 +41,7 @@
 
     <!-- Table body is left empty here, will be populated with the data retrieved with single-star.js -->
     <!-- single-star.js will find this html element by it's id "movie_table_body" -->
-    <tbody id= "movie_table_body"></tbody>
+    <tbody id= "single_movie_table_body"></tbody>
 </table>
 
 <!-- Load jQuery and Bootstrap JS -->

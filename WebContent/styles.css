@@ -1,0 +1,10 @@
+.table_header {
+    margin: auto !important;
+    text-align: center;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+}
+#movie_table {
+    margin: auto !important;
+    width: 90% !important;
+}
