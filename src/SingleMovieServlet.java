@@ -49,9 +49,11 @@ public class SingleMovieServlet extends HttpServlet {
             Statement statement = conn.createStatement();
             ResultSet movieInfo = statement.executeQuery(singleMovieQuery);
 
+
             Statement ratingStatement = conn.createStatement();
             ResultSet ratingInfo = ratingStatement.executeQuery(ratingQuery);
             // id, title, year, starIds, starNames, genreIds, genreNames, rating
+
             JsonArray jsonArray = new JsonArray();
 
             while (movieInfo.next()) {
