@@ -3,6 +3,9 @@ import com.google.gson.JsonObject;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import com.mysql.cj.protocol.Resultset;
+import com.mysql.cj.x.protobuf.MysqlxPrepare;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,6 +15,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -32,75 +36,69 @@ public class MovieListServlet extends HttpServlet {
         }
     }
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        response.setContentType("application/json");
+        JsonArray jsonArray = new JsonArray();
         PrintWriter out = response.getWriter();
 
+
         try (Connection conn = dataSource.getConnection()) {
+            String starQuery = "SELECT group_concat(starId) as starIds, group_concat(name) as starNames\n" +
+                    "FROM\n" +
+                    "(SELECT movieStars.starId, name, count(tmp.starId) as item_count\n" +
+                    "FROM\n" +
+                    "\t(SELECT *\n" +
+                    "\t FROM stars_in_movies\n" +
+                    "     WHERE movieId = ?) as movieStars\n" +
+                    "     Left Join (SELECT starId FROM stars_in_movies) as tmp\n" +
+                    "     ON movieStars.starId = tmp.starId, stars\n" +
+                    "     WHERE id = movieStars.starId\n" +
+                    "     GROUP by movieStars.starId, name\n" +
+                    "     ORDER by item_Count desc\n" +
+                    "     LIMIT 3\n" +
+                    ") as top3Stars";
+            ResultSet rs;
+            ResultSet starSet;
+            PreparedStatement statement;
+            PreparedStatement starStatement = conn.prepareStatement(starQuery);
+            String query = "";
 
-            Statement statement = conn.createStatement();
-            Statement genreStatement = conn.createStatement();
-            Statement starStatement = conn.createStatement();
+                query = genStatement(request);
+                statement = conn.prepareStatement(query);
+                rs = statement.executeQuery();
 
-            String top20Query = "SELECT id, title, year, director, rating " +
-                    "FROM movies, ratings WHERE movies.id = ratings.movieId ORDER BY rating DESC LIMIT 20";
+                while(rs.next()) {
+                    String starIds = "";
+                    String starNames = "";
+                    JsonObject jsonObject = new JsonObject();
 
-            ResultSet top20 = statement.executeQuery(top20Query);
-            JsonArray jsonArray = new JsonArray();
+                    String movieId = rs.getString("movieId");
+                    String title = rs.getString("title");
+                    String year = rs.getString("year");
+                    String director = rs.getString("director");
+                    String rating = rs.getString("rating");
+                    String genreIds = rs.getString("genreIds");
+                    String genreNames = rs.getString("genreNames");
 
+                    starStatement.setString(1, movieId);
+                    starSet = starStatement.executeQuery();
+                    while(starSet.next()) {
+                        starIds = starSet.getString("starIds");
+                        starNames = starSet.getString("starNames");
+                    }
 
+                    jsonObject.addProperty("movieId", movieId);
+                    jsonObject.addProperty("title", title);
+                    jsonObject.addProperty("year", year);
+                    jsonObject.addProperty("director", director);
+                    jsonObject.addProperty("rating", rating);
+                    jsonObject.addProperty("genreIds", genreIds);
+                    jsonObject.addProperty("genreNames", genreNames);
+                    jsonObject.addProperty("starIds", starIds);
+                    jsonObject.addProperty("starNames", starNames);
 
-            ResultSet genres;
-            ResultSet stars;
-            while (top20.next()) {
-                // GENERATE 3 GENRES FOR EACH MOVIE
-                String genreString = "";
-                String genreQuery = "SELECT group_concat(name) as names FROM (SELECT genreId FROM genres_in_movies " +
-                        "WHERE movieId = \"" + top20.getString("id") +
-                        "\" LIMIT 3) as mG, genres WHERE id = genreId";
-                genres = genreStatement.executeQuery(genreQuery);
-                genres.next();
-
-                //GENERATE 3 STARS FOR EACH MOVIE
-                String starString = "";
-                String starQuery = "SELECT group_concat(name) as names, group_concat(starId) as ids FROM (SELECT starId FROM stars_in_movies as sim " +
-                        "WHERE movieId = \"" + top20.getString("id") + "\" LIMIT 3) as mS, " +
-                        "stars WHERE starId = id";
-                stars = starStatement.executeQuery(starQuery);
-                stars.next();
-
-
-                String movie_id = top20.getString("id");
-                String movie_title = top20.getString("title");
-                String movie_year = top20.getString("year");
-                String movie_director = top20.getString("director");
-                String movie_rating = top20.getString("rating");
-                String movie_genre = genres.getString("names");
-                String movie_stars = stars.getString("names");
-                String star_ids = stars.getString("ids");
-
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("movie_id", movie_id);
-                jsonObject.addProperty("movie_title", movie_title);
-                jsonObject.addProperty("movie_year", movie_year);
-                jsonObject.addProperty("movie_director", movie_director);
-                jsonObject.addProperty("movie_genre", movie_genre);
-                jsonObject.addProperty("movie_rating", movie_rating);
-                jsonObject.addProperty("movie_stars", movie_stars);
-                jsonObject.addProperty("star_ids", star_ids);
-
-
-                jsonArray.add(jsonObject);
+                    jsonArray.add(jsonObject);
             }
-            top20.close();
-            statement.close();
 
-            // Log to localhost log
-            request.getServletContext().log("getting " + jsonArray.size() + " results");
-
-            // Write JSON string to output
             out.write(jsonArray.toString());
-            // Set response status to 200 (OK)
             response.setStatus(200);
 
         } catch (Exception e) {
@@ -118,5 +116,31 @@ public class MovieListServlet extends HttpServlet {
 
         // Always remember to close db connection after usage. Here it's done by try-with-resources
 
+    }
+
+    protected String genStatement (HttpServletRequest request) throws IOException {
+        String pageSize = "25";
+        String pageOffset = "0";
+        String query = "";
+        PreparedStatement statement;
+        if(request.getParameter("pageSize") != null) {pageSize = request.getParameter("pageSize");}
+        if(request.getParameter("pageOffset") != null) {pageOffset = request.getParameter("pageOffset");}
+
+        if(request.getParameter("movieGenre") != null) {
+            String genreId = request.getParameter("movieGenre");
+            query = "SELECT m.movieID, title, year, director, rating, group_concat(id) as genreIds, group_concat(name) as genreNames\n" +
+                    "FROM\n" +
+                    "(SELECT movieID, title, year, director \n" +
+                    "FROM genres_in_movies as gim,\n" +
+                    "movies as m \n" +
+                    "WHERE genreId = " + genreId + " and m.id = movieId \n" +
+                    "LIMIT " + pageSize + " OFFSET " + pageOffset + ") as m\n" +
+                    "LEFT JOIN (SELECT name, id, movieId FROM genres_in_movies as gim, genres WHERE  gim.genreId = genres.id) as mG\n" +
+                    "ON mG.movieId = m.movieId\n" +
+                    "LEFT JOIN (SELECT movieId, rating FROM ratings) as r\n" +
+                    "ON r.movieId = m.movieId\n" +
+                    "GROUP BY m.movieId, title, year, director, rating\n";
+        }
+        return query;
     }
 }

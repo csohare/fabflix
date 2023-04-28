@@ -6,7 +6,7 @@ function handleLoginRequest(resultData) {
     console.log(resultData);
 
     if(resultData["status"] === "success") {
-        window.location.replace("index.html");
+        window.location.replace("./");
     }
     else{
         $("#login-fail").text(resultData["message"]);
