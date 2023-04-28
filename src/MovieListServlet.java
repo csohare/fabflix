@@ -61,7 +61,7 @@ public class MovieListServlet extends HttpServlet {
             PreparedStatement starStatement = conn.prepareStatement(starQuery);
             String query = "";
 
-                query = genStatement(request);
+                query = genQuery(request);
                 statement = conn.prepareStatement(query);
                 rs = statement.executeQuery();
 
@@ -118,7 +118,7 @@ public class MovieListServlet extends HttpServlet {
 
     }
 
-    protected String genStatement (HttpServletRequest request) throws IOException {
+    protected String genQuery (HttpServletRequest request) throws IOException {
         String pageSize = "25";
         String pageOffset = "0";
         String query = "";
@@ -128,19 +128,28 @@ public class MovieListServlet extends HttpServlet {
 
         if(request.getParameter("movieGenre") != null) {
             String genreId = request.getParameter("movieGenre");
-            query = "SELECT m.movieID, title, year, director, rating, group_concat(id) as genreIds, group_concat(name) as genreNames\n" +
+            query = "SELECT m.id as movieId, title, year, director, rating, group_concat(mG.id) as genreIds, group_concat(name) as genreNames\n" +
                     "FROM\n" +
-                    "(SELECT movieID, title, year, director \n" +
+                    "(SELECT m.id, title, year, director \n" +
                     "FROM genres_in_movies as gim,\n" +
                     "movies as m \n" +
-                    "WHERE genreId = " + genreId + " and m.id = movieId \n" +
-                    "LIMIT " + pageSize + " OFFSET " + pageOffset + ") as m\n" +
-                    "LEFT JOIN (SELECT name, id, movieId FROM genres_in_movies as gim, genres WHERE  gim.genreId = genres.id) as mG\n" +
-                    "ON mG.movieId = m.movieId\n" +
-                    "LEFT JOIN (SELECT movieId, rating FROM ratings) as r\n" +
-                    "ON r.movieId = m.movieId\n" +
-                    "GROUP BY m.movieId, title, year, director, rating\n";
+                    "WHERE genreId = " + genreId + " and m.id = movieId \n";
         }
+        if(request.getParameter("movieTitle") != null) {
+            String movieTitle = request.getParameter("movieTitle");
+            query = "SELECT m.id as movieId, title, year, director, rating, group_concat(mG.id) as genreIds, group_concat(name) as genreNames\n" +
+                    "FROM\n" +
+                    "(SELECT m.id, title, year, director \n" +
+                    "FROM movies as m \n" +
+                    "WHERE title LIKE '" + movieTitle + "%'\n";
+        }
+        query += "LIMIT " + pageSize + " OFFSET " + pageOffset + ") as m\n" +
+                  "LEFT JOIN (SELECT name, genres.id, movieId FROM genres_in_movies as gim, genres WHERE  gim.genreId = genres.id) as mG\n" +
+                  "ON mG.movieId = m.id\n" +
+                  "LEFT JOIN (SELECT movieId, rating FROM ratings) as r\n" +
+                  "ON r.movieId = m.id\n" +
+                  "GROUP BY m.id, title, year, director, rating";
+
         return query;
     }
 }

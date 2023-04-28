@@ -74,6 +74,11 @@ function genURL() {
         let movieGenre = getParameterByName('movieGenre');
         url += "movieGenre=" + movieGenre;
     }
+
+    if(getParameterByName('movieTitle') != null) {
+        let movieTitle = getParameterByName('movieTitle');
+        url += "movieTitle=" + movieTitle;
+    }
     url += "&pageSize=" + pageSize + "&pageOffset=" + pageOffset;
     return url;
 
