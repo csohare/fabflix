@@ -1,5 +1,7 @@
 
 let movieTableBody = jQuery("#movie_table_body");
+let pageSize = $('.pageSize');
+let paginationButton = $('.page_btn');
 function getParameterByName(target) {
     // Get request URL
     let url = window.location.href;
@@ -22,7 +24,7 @@ function getParameterByName(target) {
  */
 function handleResult(resultData) {
 
-
+    movieTableBody.empty();
     for(let i = 0; i < resultData.length; ++i) {
         let rowHTML = "";
         let sNames= resultData[i]["starNames"];
@@ -63,7 +65,7 @@ function handleResult(resultData) {
     }
 }
 
-function genURL() {
+function genURL(pSize) {
     let url = "api/MovieList?";
     let pageSize = getParameterByName("pageSize");
     let pageOffset = getParameterByName("pageOffset");
@@ -79,17 +81,74 @@ function genURL() {
         let movieTitle = getParameterByName('movieTitle');
         url += "movieTitle=" + movieTitle;
     }
+
+    if(getParameterByName('director') != null) {
+        let director = getParameterByName('director');
+        url += "&director=" + director;
+    }
+
+    if(getParameterByName('year') != null) {
+        let year = getParameterByName('year');
+        url += "&year=" + year;
+    }
+    if(getParameterByName('starName') != null) {
+        let starName = getParameterByName('starName');
+        if(starName != "") {url += "&starName=" + starName;}
+    }
+    if(pSize != "") {pageSize = pSize;}
     url += "&pageSize=" + pageSize + "&pageOffset=" + pageOffset;
     return url;
+}
 
+function changePageSize(event) {
+    event.preventDefault();
+    let pageSize = $(this).text();
+    let urlSearchParams = new URLSearchParams(window.location.search);
+
+    urlSearchParams.set("pageSize", pageSize);
+    urlSearchParams.set("pageOffset", "0");
+    let updatedQuery = urlSearchParams.toString();
+    let newURL = window.location.origin + window.location.pathname + "?" + updatedQuery;
+
+    window.location.replace(newURL);
+
+
+}
+function pagination(event) {
+    event.preventDefault();
+    const size = parseInt(getParameterByName("pageSize"));
+    let tmp= parseInt(getParameterByName("pageOffset"));
+    if($(this).text() == "Prev") {tmp -= size;}
+    if($(this).text() == "Next") {tmp += size;}
+    const updatedOffset= tmp.toString();
+
+    let urlSearchParams = new URLSearchParams(window.location.search);
+    urlSearchParams.set("pageOffset", updatedOffset);
+    let updatedQuery = urlSearchParams.toString();
+    let newURL = window.location.origin + window.location.pathname + "?" + updatedQuery;
+    window.location.replace(newURL);
+
+}
+
+function onLoad() {
+        let prevButton = $("#prev");
+        if(getParameterByName("pageOffset") === "0") {
+            prevButton.prop("disabled", true);
+        }
 }
 
 
 /**
  * Once this .js is loaded, following scripts will be executed by the browser
  */
+onLoad();
+pageSize.click(changePageSize);
+paginationButton.click(pagination);
 
-let URL = genURL();
+
+
+let URL = genURL("");
+
 
 // Makes the HTTP GET request and registers on success callback function handleStarResult
 jQuery.ajax({

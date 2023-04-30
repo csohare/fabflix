@@ -137,13 +137,48 @@ public class MovieListServlet extends HttpServlet {
         }
         if(request.getParameter("movieTitle") != null) {
             String movieTitle = request.getParameter("movieTitle");
-            query = "SELECT m.id as movieId, title, year, director, rating, group_concat(mG.id) as genreIds, group_concat(name) as genreNames\n" +
-                    "FROM\n" +
-                    "(SELECT m.id, title, year, director \n" +
-                    "FROM movies as m \n" +
-                    "WHERE title LIKE '" + movieTitle + "%'\n";
+            if(movieTitle.equals("*")) {
+                query = "SELECT m.id as movieId, title, year, director, rating, group_concat(mG.id) as genreIds, group_concat(name) as genreNames\n" +
+                        "FROM\n" +
+                        "(SELECT m.id, title, year, director \n" +
+                        "FROM movies as m \n" +
+                        "WHERE title REGEXP '^[^a-zA-Z0-9]'\n";
+
+            }
+            else {
+                if(request.getParameter("starName") != null) {
+                    String starName = request.getParameter("starName");
+                    query = "SELECT m.id as movieId, title, year, director, rating, group_concat(mG.id) as genreIds, group_concat(name) as genreNames\n" +
+                            "FROM\n" +
+                            "(SELECT m.id, title, year, director \n" +
+                            "FROM movies as m, \n" +
+                            "(SELECT movieId\n" +
+                            "FROM stars, stars_in_movies as sim\n" +
+                            "WHERE sim.starId = stars.id and name Like '%" + starName + "%') as starMovies\n"  +
+                            "where m.id = starMovies.movieId and ";
+                }
+                else {
+                    query = "SELECT m.id as movieId, title, year, director, rating, group_concat(mG.id) as genreIds, group_concat(name) as genreNames\n" +
+                            "FROM\n" +
+                            "(SELECT m.id, title, year, director \n" +
+                            "FROM movies as m \n" +
+                            "WHERE ";
+                }
+
+                if(movieTitle.length() > 1) {query += "title LIKE '%" + movieTitle + "%'";}
+                else    {query += "title LIKE '" + movieTitle + "%'";}
+
+                if(request.getParameter("director") != null) {
+                    String director = request.getParameter("director");
+                    query += " and director LIKE '%" + director + "%'";
+                    String year = request.getParameter("year");
+                    if(!(year.equals(""))) {
+                        query += " and year LIKE " + year;
+                    }
+                }
+            }
         }
-        query += "LIMIT " + pageSize + " OFFSET " + pageOffset + ") as m\n" +
+        query += "\nLIMIT " + pageSize + " OFFSET " + pageOffset + ") as m\n" +
                   "LEFT JOIN (SELECT name, genres.id, movieId FROM genres_in_movies as gim, genres WHERE  gim.genreId = genres.id) as mG\n" +
                   "ON mG.movieId = m.id\n" +
                   "LEFT JOIN (SELECT movieId, rating FROM ratings) as r\n" +
