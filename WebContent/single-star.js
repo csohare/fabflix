@@ -40,7 +40,7 @@ function handleResult(resultData) {
 
     console.log("handleResult: populating star info from resultData");
     console.log("handleResult: populating movie table from resultData");
-    let starNameElement= jQuery("#star_name");
+    let starNameElement= jQuery("#star_title");
     let starTableBodyElement = jQuery("#star_table_body");
     let movieIds = resultData[0]["movieIds"];
     let idArray = movieIds.split(",");

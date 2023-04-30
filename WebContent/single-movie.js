@@ -42,21 +42,14 @@ function handleResult(resultData) {
     let movie_starsIds = jsonIds.split(",");
     let movie_starsNames = jsonNames.split(",");
 
+    let gIds = resultData[0]["movie_genreIds"];
+    let gNames = resultData[0]["movie_genre"];
+    let movie_genreIds = gIds.split(",");
+    let movie_genreNames = gNames.split(",");
 
     console.log("handleResult: populating star info from resultData");
-
-
-    // populate the star info h3
-    // find the empty h3 body by id "star_info"
     let movieNameElement = jQuery("#movie_name");
     let movieName = resultData[0]["movie_title"];
-
-    // append two html <p> created to the h3 body, which will refresh the page
-
-    console.log("handleResult: populating movie table from resultData");
-
-    // Populate the star table
-    // Find the empty table body by id "movie_table_body"
     let movieTableBodyElement = jQuery("#single_movie_table_body");
 
     // Concatenate the html tags with resultData jsonObject to create table rows
@@ -64,7 +57,11 @@ function handleResult(resultData) {
         rowHTML += "<tr>";
         rowHTML += "<th>" + resultData[0]["movie_year"] + "</th>";
         rowHTML += "<th>" + resultData[0]["movie_director"] + "</th>";
-        rowHTML += "<th>" + resultData[0]["movie_genre"] + "</th>";
+        rowHTML += "<th>";
+        for(let i = 0; i < movie_genreIds.length; i++) {
+            rowHTML += '<a href="movieList.html?movieGenre=' + movie_genreIds[i] + "&pageSize=25&pageOffset=0&sort=1" +
+                       '">' + movie_genreNames[i] + " </a>";
+        }
         rowHTML += "<th>";
         for(let i  = 0; i < movie_starsIds.length; i++)
         {

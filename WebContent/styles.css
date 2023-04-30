@@ -1,4 +1,4 @@
-#movie_table {
+.content_table {
     margin: auto !important;
     width: 90% !important;
 }
@@ -8,4 +8,6 @@
     padding: 15px;
 }
 
-
+.form_container {
+    width:70%;
+}

@@ -147,7 +147,14 @@ function pageSorting(event) {
 function addToCart(event) {
     event.preventDefault();
     let data = $(this).data("value");
-    console.log(data);
+    jQuery.ajax({
+        dataType: "json",  // Setting return data type
+        method: "GET",// Setting request method
+        url: "api/CartAdd?movieId=" + data + "&action=0", // Setting request url, which is mapped by StarsServlet in Stars.java
+        success: function (resultData) {
+            alert("Added to cart");
+        }
+    });
 }
 
 function onLoad() {

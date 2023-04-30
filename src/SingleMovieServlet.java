@@ -43,41 +43,65 @@ public class SingleMovieServlet extends HttpServlet {
 
         try (Connection conn = dataSource.getConnection()) {
 
-            String singleMovieQuery ="SELECT * FROM (SELECT * FROM movies WHERE movies.id = " + id + ") as movieInfo, (SELECT  group_concat(starId) as starIds , group_concat(starName) as starNames, genreIds, genreNames FROM (SELECT starId, name as starName FROM stars_in_movies as sim, stars WHERE sim.movieId = " + id + " and stars.id = sim.starId) as movieStars, (SELECT group_concat(genreId) as genreIds, group_concat(name) as genreNames FROM genres_in_movies as gim, genres WHERE gim.movieId = " + id + " and genres.id = gim.genreId) as genreStars GROUP BY genreIds, genreNames) as mstarGenre;";
-            String ratingQuery = "SELECT rating FROM ratings WHERE ratings.movieId = " + id + ";";
+            String movieQuery = "SELECT m.id as movieId, title, year, director, rating, group_concat(mG.id) as genreIds, group_concat(name) as genreNames\n" +
+                    "FROM\n" +
+                    "(SELECT m.id, title, year, director \n" +
+                    "FROM movies as m\n" +
+                    "WHERE id = " + id + ") as m\n" +
+                    "LEFT JOIN (SELECT name, genres.id, movieId FROM genres_in_movies as gim, genres WHERE  gim.genreId = genres.id) as mG\n" +
+                    "ON mG.movieId = m.id\n" +
+                    "LEFT JOIN (SELECT movieId, rating FROM ratings) as r\n" +
+                    "ON r.movieId = m.id";
+            String starQuery = "SELECT group_concat(starId) as starIds, group_concat(name) as names\n" +
+                    "FROM\n" +
+                    "(SELECT movieStars.starId, name, count(tmp.starId) as item_count\n" +
+                    "FROM\n" +
+                    "(SELECT *\n" +
+                    "FROM stars_in_movies\n" +
+                    "     WHERE movieId = " + id + ")as movieStars\n" +
+                    "     Left Join (SELECT starId FROM stars_in_movies) as tmp\n" +
+                    "     ON movieStars.starId = tmp.starId, stars\n" +
+                    "     WHERE id = movieStars.starId\n" +
+                    "     GROUP by movieStars.starId, name\n" +
+                    "     ORDER by item_Count desc\n" +
+                    ") as stars\n";
             Statement statement = conn.createStatement();
-            ResultSet movieInfo = statement.executeQuery(singleMovieQuery);
+            ResultSet movieInfo = statement.executeQuery(movieQuery);
 
 
-            Statement ratingStatement = conn.createStatement();
-            ResultSet ratingInfo = ratingStatement.executeQuery(ratingQuery);
+            Statement starStatement = conn.createStatement();
+            ResultSet starInfo = starStatement.executeQuery(starQuery);
             // id, title, year, starIds, starNames, genreIds, genreNames, rating
 
             JsonArray jsonArray = new JsonArray();
 
             while (movieInfo.next()) {
+                String movie_id = movieInfo.getString("movieId");
                 String movie_title = movieInfo.getString("title");
                 String movie_year = movieInfo.getString("year");
                 String movie_director = movieInfo.getString("director");
+                String genre_ids = movieInfo.getString("genreIds");
                 String movie_genre = movieInfo.getString("genreNames");
-                String movie_rating;
-                if(ratingInfo.next()) {
-                    movie_rating = ratingInfo.getString("rating");
+                String movie_rating = movieInfo.getString("rating");
+                String starIds = "";
+                String starNames = "";
+                while(starInfo.next()) {
+                    starIds = starInfo.getString("starIds");
+                    starNames = starInfo.getString("names");
                 }
-                else {movie_rating = "N/A";}
-                String movie_starNames = movieInfo.getString("starNames");
-                String movie_starIds = movieInfo.getString("starIds");
+
 
 
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("movieId", request.getParameter("id"));
+                jsonObject.addProperty("movieId", movie_id);
                 jsonObject.addProperty("movie_title", movie_title);
                 jsonObject.addProperty("movie_year", movie_year);
                 jsonObject.addProperty("movie_director", movie_director);
+                jsonObject.addProperty("movie_genreIds", genre_ids);
                 jsonObject.addProperty("movie_genre", movie_genre);
                 jsonObject.addProperty("movie_rating", movie_rating);
-                jsonObject.addProperty("movie_starNames", movie_starNames);
-                jsonObject.addProperty("movie_starIds", movie_starIds);
+                jsonObject.addProperty("movie_starNames", starNames);
+                jsonObject.addProperty("movie_starIds", starIds);
 
 
                 jsonArray.add(jsonObject);
