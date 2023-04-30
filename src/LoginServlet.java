@@ -19,7 +19,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
+import java.util.HashMap;
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
 public class LoginServlet extends HttpServlet {
     private DataSource dataSource;
@@ -57,6 +57,9 @@ public class LoginServlet extends HttpServlet {
                 } else {
                     responseJsonObject.addProperty("status", "success");
                     request.getSession().setAttribute("user", email);
+                    request.getSession().setAttribute("cart", new HashMap<String, Integer>());
+                    request.getSession().setAttribute("movieListQuery", "movieTitle=&director=&year=&starName=&pageSize=25&pageOffset=0");
+
                 }
             }
             if(!UserFound) {

@@ -75,11 +75,26 @@ function handleResult(resultData) {
         }
         rowHTML += "</th>";
         rowHTML += "<th>" + resultData[0]["movie_rating"] + "</th>";
+        rowHTML += "<th>" + '<button type="button" class="btn btn-outline-success cartButton" data-value="' + resultData[0]["movieId"] + '">' +
+        "Add to Cart</button></th>";
         rowHTML += "</tr>";
 
         // Append the row created to the table body, which will refresh the page
         movieTableBodyElement.append(rowHTML);
         movieNameElement.append(movieName);
+}
+function addToCart(event) {
+    event.preventDefault();
+    let data = $(this).data("value");
+    jQuery.ajax({
+        dataType: "json",  // Setting return data type
+        method: "GET",// Setting request method
+        url: "api/CartAdd?movieId=" + data, // Setting request url, which is mapped by StarsServlet in Stars.java
+        success: function(resultData) {
+            alert("Added to cart");
+        }
+    });
+
 }
 
 /**
@@ -88,6 +103,7 @@ function handleResult(resultData) {
 
 // Get id from URL
 let movieId = getParameterByName('id');
+$(document).on('click', '.cartButton', addToCart);
 
 // Makes the HTTP GET request and registers on success callback function handleResult
 jQuery.ajax({

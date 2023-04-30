@@ -4,12 +4,18 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
 
     <title>Main Page</title>
 </head>
 <body>
-<nav class="navbar navbar-dark bg-dark custom-navbar">
+<nav class="navbar navbar-dark bg-dark">
     <a class="navbar-brand" href="./"><h2>FabFlix</h2></a>
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+            <a class="nav-link my-auto movieList" href="#"><h3>Movie List</h3></a>
+        </li>
+    </ul>
     <form id="search_form" class="form-inline my-2 my-lg-0" action="javascript:void(0)">
         <div class="form-group mx-sm-3">
             <input type="text" class="form-control form-control-lg" id="star_name" placeholder="Star Name">

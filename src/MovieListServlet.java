@@ -97,7 +97,7 @@ public class MovieListServlet extends HttpServlet {
 
                     jsonArray.add(jsonObject);
             }
-
+            request.getSession().setAttribute("movieListQuery", request.getQueryString());
             out.write(jsonArray.toString());
             response.setStatus(200);
 
@@ -133,7 +133,7 @@ public class MovieListServlet extends HttpServlet {
                     "(SELECT m.id, title, year, director \n" +
                     "FROM genres_in_movies as gim,\n" +
                     "movies as m \n" +
-                    "WHERE genreId = " + genreId + " and m.id = movieId \n";
+                    "WHERE genreId = " + genreId + " and m.id = movieId";
         }
         if(request.getParameter("movieTitle") != null) {
             String movieTitle = request.getParameter("movieTitle");
@@ -178,12 +178,46 @@ public class MovieListServlet extends HttpServlet {
                 }
             }
         }
-        query += "\nLIMIT " + pageSize + " OFFSET " + pageOffset + ") as m\n" +
+        query += ") as m\n" +
                   "LEFT JOIN (SELECT name, genres.id, movieId FROM genres_in_movies as gim, genres WHERE  gim.genreId = genres.id) as mG\n" +
                   "ON mG.movieId = m.id\n" +
                   "LEFT JOIN (SELECT movieId, rating FROM ratings) as r\n" +
                   "ON r.movieId = m.id\n" +
-                  "GROUP BY m.id, title, year, director, rating";
+                  "GROUP BY m.id, title, year, director, rating\n";
+        if(request.getParameter("sort") != null) {
+            String sort = request.getParameter("sort");
+            switch (sort) {
+                case "1":
+                    query += "ORDER BY TITLE ASC, RATING ASC";
+                    break;
+                case "2":
+                    query += "ORDER BY TITLE ASC, RATING DESC";
+                    break;
+                case "3":
+                    query += "ORDER BY TITLE DESC, RATING DESC";
+                    break;
+                case "4":
+                    query += "ORDER BY TITLE DESC, RATING ASC";
+                    break;
+                case "5":
+                    query += "ORDER BY RATING ASC, TITLE ASC";
+                    break;
+                case "6":
+                    query += "ORDER BY RATING ASC, TITLE DESC";
+                    break;
+                case "7":
+                    query += "ORDER BY RATING DESC, TITLE DESC";
+                    break;
+                case "8":
+                    query += "ORDER BY RATING DESC, TITLE ASC";
+                    break;
+                default:
+                    query += "ORDER BY TITLE ASC, RATING ASC";
+                    break;
+            }
+
+            query += "\nLIMIT " + pageSize + " OFFSET " + pageOffset + ";";
+        }
 
         return query;
     }

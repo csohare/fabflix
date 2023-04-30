@@ -6,7 +6,7 @@ function handleResult(resultData) {
     for(let i = 0; i < resultData.length; ++i) {
         if(i != 0 && !(i % 4))  {rowHTML += "</tr>" + "<tr>"}
         rowHTML += "<th>" +
-            '<a href="movieList.html?movieGenre=' + resultData[i]["id"] + '&pageSize=25&pageOffset=0">'
+            '<a href="movieList.html?movieGenre=' + resultData[i]["id"] + '&pageSize=25&pageOffset=0&sort=1">'
             + resultData[i]["genre"] + "</a></th>";
     }
     rowHTML += "</tr>";

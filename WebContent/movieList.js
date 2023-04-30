@@ -1,5 +1,5 @@
-
 let movieTableBody = jQuery("#movie_table_body");
+let pageSort = $('.pageSort');
 let pageSize = $('.pageSize');
 let paginationButton = $('.page_btn');
 function getParameterByName(target) {
@@ -60,6 +60,8 @@ function handleResult(resultData) {
 
         let rating = resultData[i]["rating"] == null ? "N/A" : resultData[i]["rating"];
         rowHTML += "<th>" + rating + "</th>";
+        rowHTML += "<th>" + '<button type="button" class="btn btn-outline-success cartButton" data-value="' + resultData[i]["movieId"] + '">' +
+                   "Add to Cart</button></th>";
         rowHTML += "</tr>"
         movieTableBody.append(rowHTML);
     }
@@ -69,6 +71,8 @@ function genURL(pSize) {
     let url = "api/MovieList?";
     let pageSize = getParameterByName("pageSize");
     let pageOffset = getParameterByName("pageOffset");
+    let sort = getParameterByName("sort");
+    if(sort == null)    {sort = "1";}
     if(pageSize == null)    {pageSize = "25";}
     if(pageOffset == null)  {pageOffset = "0";}
 
@@ -96,7 +100,7 @@ function genURL(pSize) {
         if(starName != "") {url += "&starName=" + starName;}
     }
     if(pSize != "") {pageSize = pSize;}
-    url += "&pageSize=" + pageSize + "&pageOffset=" + pageOffset;
+    url += "&pageSize=" + pageSize + "&pageOffset=" + pageOffset + "&sort=" + sort;
     return url;
 }
 
@@ -130,6 +134,22 @@ function pagination(event) {
 
 }
 
+function pageSorting(event) {
+    event.preventDefault();
+    let sortValue = $(this).data('value');
+    let urlSearchParams = new URLSearchParams(window.location.search);
+    urlSearchParams.set("sort", sortValue);
+    let updatedQuery = urlSearchParams.toString();
+    let newURL = window.location.origin + window.location.pathname + "?" + updatedQuery;
+    window.location.replace(newURL);
+}
+
+function addToCart(event) {
+    event.preventDefault();
+    let data = $(this).data("value");
+    console.log(data);
+}
+
 function onLoad() {
         let prevButton = $("#prev");
         if(getParameterByName("pageOffset") === "0") {
@@ -138,19 +158,17 @@ function onLoad() {
 }
 
 
+
 /**
  * Once this .js is loaded, following scripts will be executed by the browser
  */
 onLoad();
 pageSize.click(changePageSize);
+pageSort.click(pageSorting);
 paginationButton.click(pagination);
-
-
+$(document).on('click', '.cartButton', addToCart);
 
 let URL = genURL("");
-
-
-// Makes the HTTP GET request and registers on success callback function handleStarResult
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method

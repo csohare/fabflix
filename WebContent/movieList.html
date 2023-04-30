@@ -23,6 +23,11 @@
 <body>
 <nav class="navbar navbar-dark bg-dark custom-navbar">
     <a class="navbar-brand" href="./"><h2>FabFlix</h2></a>
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+            <a class="nav-link my-auto movieList" href="#"><h3>Movie List</h3></a>
+        </li>
+    </ul>
     <form id="search_form" class="form-inline my-2 my-lg-0" action="javascript:void(0)">
         <div class="form-group mx-sm-3">
             <input type="text" class="form-control form-control-lg" id="star_name" placeholder="Star Name">
@@ -39,16 +44,39 @@
         <button class="btn btn-lg btn-outline-success my-2 my-sm-0 ml-sm-3" type="submit">Search</button>
     </form>
 </nav>
-<h1 id="TableHead" class="table_header" style="">Results</h1>
-<div class="dropdown">
-    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Page Size
-    </button>
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item pageSize" href="#">10</a>
-        <a class="dropdown-item pageSize" href="#">25</a>
-        <a class="dropdown-item pageSize" href="#">50</a>
-        <a class="dropdown-item pageSize" href="#">100</a>
+<div class="container-fluid mt-3" style="width:90%;">
+    <div class="row">
+        <div class="col-md-6 pl-lg-3">
+            <h1 class="table_title ml-lg-3">Results</h1>
+        </div>
+        <div class="col-md-6 d-flex justify-content-end">
+            <div class="dropdown mr-2">
+                <button class="btn btn-primary dropdown-toggle btn-lg" type="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Sort
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a  data-value="1" class="dropdown-item pageSort" href="#">Title &uarr; | Rating &uarr;</a>
+                    <a  data-value="2" class="dropdown-item pageSort" href="#">Title &uarr; | Rating &darr;</a>
+                    <a  data-value="3" class="dropdown-item pageSort" href="#">Title &darr; | Rating &darr;</a>
+                    <a  data-value="4" class="dropdown-item pageSort" href="#">Title &darr; | Rating &uarr;</a>
+                    <a  data-value="5" class="dropdown-item pageSort" href="#">Rating &uarr;| Title &uarr;</a>
+                    <a  data-value="6" class="dropdown-item pageSort" href="#">Rating &uarr;| Title &darr;</a>
+                    <a  data-value="7" class="dropdown-item pageSort" href="#">Rating &darr; | Title &darr;</a>
+                    <a  data-value="8" class="dropdown-item pageSort" href="#">Rating &darr; | Title &uarr;</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle btn-lg" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Page Size
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item pageSize" href="#">10</a>
+                    <a class="dropdown-item pageSize" href="#">25</a>
+                    <a class="dropdown-item pageSize" href="#">50</a>
+                    <a class="dropdown-item pageSize" href="#">100</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <table id="movie_table" class="table table-striped">
@@ -60,12 +88,18 @@
         <th>Genres</th>
         <th>Stars</th>
         <th>Rating</th>
+        <th>Add to Cart</th>
     </tr>
     </thead>
     <tbody id="movie_table_body"></tbody>
 </table>
-<button id="prev" type="button" class="btn btn-primary page_btn">Prev</button>
-<button type="button" class="btn btn-primary page_btn">Next</button>
+
+<div class="container">
+    <div class="d-flex justify-content-center">
+        <button id="prev" type="button" class="btn btn-primary page_btn mx-2">Prev</button>
+        <button type="button" class="btn btn-primary page_btn mx-2">Next</button>
+    </div>
+</div>
 <!-- Load jQuery and Bootstrap JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>

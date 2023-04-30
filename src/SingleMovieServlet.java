@@ -70,6 +70,7 @@ public class SingleMovieServlet extends HttpServlet {
 
 
                 JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("movieId", request.getParameter("id"));
                 jsonObject.addProperty("movie_title", movie_title);
                 jsonObject.addProperty("movie_year", movie_year);
                 jsonObject.addProperty("movie_director", movie_director);
