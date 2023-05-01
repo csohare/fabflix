@@ -1,11 +1,10 @@
 # s23-122b-team-14
 s23-122b-team-14 created by GitHub Classroom
 
-
-https://user-images.githubusercontent.com/84535553/232348827-c4a047dd-f8d7-4ceb-87f6-fbca3d7ada61.mp4
+https://user-images.githubusercontent.com/84535553/235409280-9aed5b02-2a4a-450c-8628-7de4ac1758b4.mp4
 
 CONTRIBUTIONS:
 
-Colin O'Hare: MovieListPage, SingleStarPage
+Colin O'Hare: MoviePages, Checkout, Search, Sort, Pagination
 
-Lincoln Nguyen: SingleMoviePage
+Lincoln Nguyen: Styling, Queries, Login
