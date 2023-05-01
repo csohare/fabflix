@@ -86,7 +86,7 @@ function addToCart(event) {
     jQuery.ajax({
         dataType: "json",  // Setting return data type
         method: "GET",// Setting request method
-        url: "api/CartAdd?movieId=" + data, // Setting request url, which is mapped by StarsServlet in Stars.java
+        url: "api/CartAdd?movieId=" + data +"&action=0", // Setting request url, which is mapped by StarsServlet in Stars.java
         success: function(resultData) {
             alert("Added to cart");
         }
