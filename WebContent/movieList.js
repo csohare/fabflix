@@ -159,9 +159,25 @@ function addToCart(event) {
 
 function onLoad() {
         let prevButton = $("#prev");
+        let nextButton = $("#next")
         if(getParameterByName("pageOffset") === "0") {
             prevButton.prop("disabled", true);
         }
+        let offset = parseInt(getParameterByName("pageOffset"));
+        let pageSize = parseInt(getParameterByName("pageSize"));
+        let newPageOffset = offset + pageSize;
+        let urlSearchParams  = new URLSearchParams(window.location.search);
+        urlSearchParams.set("pageSize", "1");
+        urlSearchParams.set("pageOffset", newPageOffset);
+
+        jQuery.ajax({
+            dataType: "json", // Setting return data type
+            method: "GET", // Setting request method
+            url: "api/MovieList?" + urlSearchParams.toString(),
+            success: function(resultData) {
+                if(resultData.length < 1)   {nextButton.prop("disabled", true);}
+            }
+        });
 }
 
 

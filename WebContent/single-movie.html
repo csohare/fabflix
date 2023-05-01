@@ -21,28 +21,39 @@
     <title>Single Movie</title>
 </head>
 <body>
-<nav class="navbar navbar-dark bg-dark">
+<nav class="navbar navbar-dark bg-dark navbar-expand-lg custom-navbar">
     <a class="navbar-brand" href="./"><h2>FabFlix</h2></a>
-    <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-            <a class="nav-link my-auto movieList" href="#"><h3>Movie List</h3></a>
-        </li>
-    </ul>
-    <form id="search_form" class="form-inline my-2 my-lg-0" action="javascript:void(0)">
-        <div class="form-group mx-sm-3">
-            <input type="text" class="form-control form-control-lg" id="star_name" placeholder="Star Name">
-        </div>
-        <div class="form-group mx-sm-3">
-            <input type="text" class="form-control form-control-lg" id="movie_title" placeholder="Movie Title">
-        </div>
-        <div class="form-group mx-sm-3">
-            <input type="text" class="form-control form-control-lg" id="director" placeholder="Director">
-        </div>
-        <div class="form-group mx-sm-3">
-            <input type="number" class="form-control form-control-lg" id="year" placeholder="Year">
-        </div>
-        <button class="btn btn-lg btn-outline-success my-2 my-sm-0 ml-sm-3" type="submit">Search</button>
-    </form>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link movieList" href="#"><h3>Movie List</h3></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="shoppingCart.html"><h3>Shopping Cart</h3></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="checkout.html"><h3>Checkout</h3></a>
+            </li>
+        </ul>
+        <form id="search_form" class="form-inline my-2 my-lg-0" action="javascript:void(0)">
+            <div class="form-group mx-sm-3">
+                <input type="text" class="form-control form-control-lg" id="star_name" placeholder="Star Name">
+            </div>
+            <div class="form-group mx-sm-3">
+                <input type="text" class="form-control form-control-lg" id="movie_title" placeholder="Movie Title">
+            </div>
+            <div class="form-group mx-sm-3">
+                <input type="text" class="form-control form-control-lg" id="director" placeholder="Director">
+            </div>
+            <div class="form-group mx-sm-3">
+                <input type="number" class="form-control form-control-lg" id="year" placeholder="Year">
+            </div>
+            <button class="btn btn-lg btn-outline-success my-2 my-sm-0 ml-sm-3" type="submit">Search</button>
+        </form>
+    </div>
 </nav>
 
 <!-- H3 body is left empty here, will be populated with the data retrieved with single-star.js -->

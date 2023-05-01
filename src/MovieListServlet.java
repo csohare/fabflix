@@ -80,7 +80,7 @@ public class MovieListServlet extends HttpServlet {
 
                     starStatement.setString(1, movieId);
                     starSet = starStatement.executeQuery();
-                    while(starSet.next()) {
+                    while (starSet.next()) {
                         starIds = starSet.getString("starIds");
                         starNames = starSet.getString("starNames");
                     }
@@ -96,8 +96,10 @@ public class MovieListServlet extends HttpServlet {
                     jsonObject.addProperty("starNames", starNames);
 
                     jsonArray.add(jsonObject);
+                }
+            if(!request.getParameter("pageSize").equals("1")){
+                request.getSession().setAttribute("movieListQuery", request.getQueryString());
             }
-            request.getSession().setAttribute("movieListQuery", request.getQueryString());
             out.write(jsonArray.toString());
             response.setStatus(200);
 
