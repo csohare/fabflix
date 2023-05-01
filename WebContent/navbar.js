@@ -5,7 +5,7 @@ function handleJump(resultData){
     console.log(resultData["query"]);
     console.log(window.location.origin)
     console.log(window.location.pathname)
-    let newURL = window.location.origin +  "/PROJECT_war/movieList.html?" + resultData["query"];
+    let newURL = window.location.origin +  "/PROJECT/movieList.html?" + resultData["query"];
     window.location.replace(newURL);
     console.log(newURL);
 }
