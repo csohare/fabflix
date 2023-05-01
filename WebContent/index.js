@@ -17,7 +17,7 @@ function populateTitles(){
     let rowHTML = "<tr>";
     for(let i = 65; i <= 90; ++i) {
         rowHTML += "<th>";
-        rowHTML += '<a href="movieList.html?movieTitle=' + String.fromCharCode(i) + '&pageSize=25&pageOffset=0">'
+        rowHTML += '<a href="movieList.html?movieTitle=' + String.fromCharCode(i) + '&pageSize=25&pageOffset=0&sort=1">'
         + String.fromCharCode(i) + " </a></th>";
     }
     rowHTML += "</tr>";
@@ -27,7 +27,7 @@ function populateTitles(){
         rowHTML += '<a href="movieList.html?movieTitle=' +  String.fromCharCode(i) + '">'
         + String.fromCharCode(i) + " </a></th>";
         }
-    rowHTML += '<th><a href="movieList.html?movieTitle=' + '*' + '&pageSize=25&pageOffset=0">' + "*" + "</a></th>";
+    rowHTML += '<th><a href="movieList.html?movieTitle=' + '*' + '&pageSize=25&pageOffset=0&sort=1">' + "*" + "</a></th>";
 
     titleTableBody.append(rowHTML);
 }

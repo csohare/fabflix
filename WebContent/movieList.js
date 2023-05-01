@@ -175,6 +175,7 @@ function onLoad() {
             method: "GET", // Setting request method
             url: "api/MovieList?" + urlSearchParams.toString(),
             success: function(resultData) {
+                console.log(resultData.length);
                 if(resultData.length < 1)   {nextButton.prop("disabled", true);}
             }
         });
@@ -185,7 +186,6 @@ function onLoad() {
 /**
  * Once this .js is loaded, following scripts will be executed by the browser
  */
-onLoad();
 pageSize.click(changePageSize);
 pageSort.click(pageSorting);
 paginationButton.click(pagination);
@@ -198,3 +198,5 @@ jQuery.ajax({
     url: URL,
     success: (resultData) => handleResult(resultData)
 });
+
+onLoad();
