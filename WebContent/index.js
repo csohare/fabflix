@@ -27,7 +27,7 @@ function populateTitles(){
         rowHTML += '<a href="movieList.html?movieTitle=' +  String.fromCharCode(i) + '">'
         + String.fromCharCode(i) + " </a></th>";
         }
-    rowHTML += '<th><a href="movieList.html?movieTitle=' + '*' + '">' + "*" + "</a></th>";
+    rowHTML += '<th><a href="movieList.html?movieTitle=' + '*' + '&pageSize=25&pageOffset=0">' + "*" + "</a></th>";
 
     titleTableBody.append(rowHTML);
 }
