@@ -8,3 +8,6 @@ CONTRIBUTIONS:
 Colin O'Hare: MoviePages, Checkout, Search, Sort, Pagination
 
 Lincoln Nguyen: Styling, Queries, Login
+
+Single Letter Title matches done by using "{Letter}%"
+All other matching done with "%{SearchTerm}%" To allow for substring matching.
