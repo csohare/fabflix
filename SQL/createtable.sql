@@ -1,18 +1,21 @@
-	drop database if exists moviedb;
+drop database if exists moviedb;
+create database if not exists moviedb;
+use moviedb;
+drop database if exists moviedb;
 create database if not exists moviedb;
 use moviedb;
 
 CREATE TABLE IF NOT EXISTS movies (
-		id varchar(10) NOT NULL,
-		title varchar(100) NOT NULL,
-		year integer NOT NULL,
-		director varchar(100) NOT NULL,
+        id varchar(10) NOT NULL,
+        title varchar(100) NOT NULL,
+        year integer NOT NULL,
+        director varchar(100) NOT NULL,
         
         PRIMARY KEY (id)
 );
        
 CREATE TABLE IF NOT EXISTS stars (
-	id varchar(10) NOT NULL,
+    id varchar(10) NOT NULL,
     name varchar(100) NOT NULL,
     birthYear INTEGER DEFAULT NULL,
     
@@ -20,7 +23,7 @@ CREATE TABLE IF NOT EXISTS stars (
 );
 
 CREATE TABLE IF NOT EXISTS stars_in_movies (
-	starId varchar(10) NOT NULL, 
+    starId varchar(10) NOT NULL, 
     movieId varchar(10) NOT NULL,
     
     FOREIGN KEY (starID) REFERENCES stars(id),
@@ -29,14 +32,14 @@ CREATE TABLE IF NOT EXISTS stars_in_movies (
 );
        
 CREATE TABLE IF NOT EXISTS genres(
-	id integer NOT NULL AUTO_INCREMENT,
+    id integer NOT NULL AUTO_INCREMENT,
     name varchar(32) NOT NULL,
     
     PRIMARY KEY(id)
 );
 
 CREATE TABLE IF NOT EXISTS genres_in_movies (
-	genreId integer,
+    genreId integer,
     movieId varchar(10),
     
     FOREIGN KEY (genreId) REFERENCES genres(id),
@@ -45,7 +48,7 @@ CREATE TABLE IF NOT EXISTS genres_in_movies (
 );
 
 CREATE TABLE IF NOT EXISTS creditcards (
-	id varchar(20) NOT NULL,
+    id varchar(20) NOT NULL,
     firstName varchar(50) NOT NULL,
     lastName varchar(50) NOT NULL,
     expiration date NOT NULL,
@@ -54,7 +57,7 @@ CREATE TABLE IF NOT EXISTS creditcards (
 );
 
 CREATE TABLE IF NOT EXISTS customers (
-	id integer NOT NULL AUTO_INCREMENT,
+    id integer NOT NULL AUTO_INCREMENT,
     firstName varchar(50) NOT NULL,
     lastName varchar(50) NOT NULL,
     ccId varchar(20) NOT NULL,
@@ -66,25 +69,24 @@ CREATE TABLE IF NOT EXISTS customers (
     PRIMARY KEY(id)
 );
 
-
-CREATE TABLE IF NOT EXISTS ratings (
-	movieId varchar(10) NOT NULL,
-    rating float NOT NULL,
-    numVotes integer NOT NULL,
-    
-    FOREIGN KEY (movieId) REFERENCES movies(id),
-    PRIMARY KEY(movieId)
-    PRIMARY KEY(id)
-);
-
 CREATE TABLE IF NOT EXISTS sales (
-	id integer NOT NULL AUTO_INCREMENT, 
+    id integer NOT NULL,
     customerId integer NOT NULL,
     movieId varchar(10) NOT NULL,
     saleDate date NOT NULL,
     
     FOREIGN KEY (customerId) REFERENCES customers(id),
     FOREIGN KEY (movieId) REFERENCES movies(id),
+    PRIMARY KEY(id)
+);
+
+
+CREATE TABLE IF NOT EXISTS ratings (
+    movieId varchar(10) NOT NULL,
+    rating float NOT NULL,
+    numVotes integer NOT NULL,
+    
+    FOREIGN KEY (movieId) REFERENCES movies(id),
+    PRIMARY KEY(movieId)
     
 );
-       
