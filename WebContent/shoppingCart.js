@@ -47,7 +47,7 @@ function removeFromCart(event) {
         method: "GET",// Setting request method
         url: "api/CartAdd?movieId=" + data + "&action=1", // Setting request url, which is mapped by StarsServlet in Stars.java
         success: function (resultData) {
-            alert("Added to cart");
+            alert("Removed From Cart");
         }
     });
     window.location.reload();
