@@ -7,7 +7,9 @@ function handleCheckoutRequest(result) {
     if(result["status"] == "failed") {
         errorText.text(result["message"]);
     }
-    window.location.reload();
+    else {
+        window.location.reload();
+    }
 }
 
 function handleResult(resultData) {
