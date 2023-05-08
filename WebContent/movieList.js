@@ -46,7 +46,7 @@ function handleResult(resultData) {
 
         rowHTML+= "<th>"
         for(let j = 0; j < genreNames.length && j < 3; ++j) {
-            rowHTML += "<a href='movieList.html?movieGenre=" + genreIds[j] + "&pageSize=25&pageOffset=0&sort=1'>"
+            rowHTML += "<a href='movieList.html?movieGenre=" + genreIds[j] + "&pageSize=25&pageOffset=0&sort='>"
                 + genreNames[j] + " </a>";
         }
         rowHTML += "</th>";

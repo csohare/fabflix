@@ -1,6 +1,5 @@
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -12,6 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import java.io.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -39,7 +39,6 @@ public class MovieListServlet extends HttpServlet {
         JsonArray jsonArray = new JsonArray();
         PrintWriter out = response.getWriter();
 
-
         try (Connection conn = dataSource.getConnection()) {
             String starQuery = "SELECT group_concat(starId) as starIds, group_concat(name) as starNames\n" +
                     "FROM\n" +
@@ -63,6 +62,54 @@ public class MovieListServlet extends HttpServlet {
 
                 query = genQuery(request);
                 statement = conn.prepareStatement(query);
+
+                int pageSize = request.getParameter("pageSize") == null ? 25 : Integer.parseInt(request.getParameter("pageSize"));
+                int pageOffset = request.getParameter("pageOffset") == null ? 0 : Integer.parseInt(request.getParameter("pageOffset"));
+
+                if(request.getParameter("movieGenre") != null)  {
+                    statement.setString(1, request.getParameter("movieGenre"));
+                    statement.setInt(2, pageSize);
+                    statement.setInt(3, pageOffset);
+                }
+                else if(request.getParameter("movieTitle") != null) {
+                   String movieTitle = request.getParameter("movieTitle");
+                    if(movieTitle.length() <= 1 && !(movieTitle.equals("*"))) {movieTitle += "%";}
+                    else    {movieTitle = "%" + movieTitle + "%";}
+
+                   if(movieTitle.equals("%*%")) {
+                       statement.setInt(1, pageSize);
+                       statement.setInt(2, pageOffset);
+                   }
+
+
+
+                   else if(request.getParameter("director") != null) {
+                       String director = "%" + request.getParameter("director") + "%";
+                       String year = request.getParameter("year");
+                       if(year.equals(""))  {year = "%";}
+                       if(request.getParameter("starName") != null) {
+                           String starName = "%" + request.getParameter("starName") + "%";
+                           statement.setString(1, starName);
+                           statement.setString(2, movieTitle);
+                           statement.setString(3, director);
+                           statement.setString(4, year);
+                           statement.setInt(5, pageSize);
+                           statement.setInt(6, pageOffset);
+                       }
+                       else {
+                           statement.setString(1, movieTitle);
+                           statement.setString(2, director);
+                           statement.setString(3, year);
+                           statement.setInt(4, pageSize);
+                           statement.setInt(5, pageOffset);
+                       }
+                   }
+                   else {
+                       statement.setString(1, movieTitle);
+                       statement.setInt(2, pageSize);
+                       statement.setInt(3, pageOffset);
+                   }
+                }
                 rs = statement.executeQuery();
 
                 while(rs.next()) {
@@ -121,12 +168,8 @@ public class MovieListServlet extends HttpServlet {
     }
 
     protected String genQuery (HttpServletRequest request) throws IOException {
-        String pageSize = "25";
-        String pageOffset = "0";
         String query = "";
         PreparedStatement statement;
-        if(request.getParameter("pageSize") != null) {pageSize = request.getParameter("pageSize");}
-        if(request.getParameter("pageOffset") != null) {pageOffset = request.getParameter("pageOffset");}
 
         if(request.getParameter("movieGenre") != null) {
             String genreId = request.getParameter("movieGenre");
@@ -135,7 +178,7 @@ public class MovieListServlet extends HttpServlet {
                     "(SELECT m.id, title, year, director \n" +
                     "FROM genres_in_movies as gim,\n" +
                     "movies as m \n" +
-                    "WHERE genreId = " + genreId + " and m.id = movieId";
+                    "WHERE genreId = ? and m.id = movieId";
         }
         if(request.getParameter("movieTitle") != null) {
             String movieTitle = request.getParameter("movieTitle");
@@ -156,7 +199,7 @@ public class MovieListServlet extends HttpServlet {
                             "FROM movies as m, \n" +
                             "(SELECT movieId\n" +
                             "FROM stars, stars_in_movies as sim\n" +
-                            "WHERE sim.starId = stars.id and name Like '%" + starName + "%') as starMovies\n"  +
+                            "WHERE sim.starId = stars.id and name Like ?) as starMovies\n"  +
                             "where m.id = starMovies.movieId and ";
                 }
                 else {
@@ -167,16 +210,14 @@ public class MovieListServlet extends HttpServlet {
                             "WHERE ";
                 }
 
-                if(movieTitle.length() > 1) {query += "title LIKE '%" + movieTitle + "%'";}
-                else    {query += "title LIKE '" + movieTitle + "%'";}
+                if(movieTitle.length() > 1) {query += "title LIKE ?";}
+                else    {query += "title LIKE ?";}
 
                 if(request.getParameter("director") != null) {
                     String director = request.getParameter("director");
-                    query += " and director LIKE '%" + director + "%'";
+                    query += " and director LIKE ?";
                     String year = request.getParameter("year");
-                    if(!(year.equals(""))) {
-                        query += " and year LIKE " + year;
-                    }
+                    query += " and year LIKE ?";
                 }
             }
         }
@@ -218,7 +259,7 @@ public class MovieListServlet extends HttpServlet {
                     break;
             }
 
-            query += "\nLIMIT " + pageSize + " OFFSET " + pageOffset + ";";
+            query += "\nLIMIT ? OFFSET ?;";
         }
 
         return query;
