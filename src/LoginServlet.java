@@ -6,6 +6,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import com.google.gson.JsonArray;
 
+import org.jasypt.util.password.PasswordEncryptor;
+import org.jasypt.util.password.StrongPasswordEncryptor;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import jakarta.servlet.ServletConfig;
@@ -34,14 +37,31 @@ public class LoginServlet extends HttpServlet {
     }
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = response.getWriter();
+        JsonObject responseJsonObject = new JsonObject();
+
+        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+        System.out.println("recaptcha Response" + gRecaptchaResponse);
+
+        try{
+            VerifyRecaptcha.verify(gRecaptchaResponse);
+        }catch (Exception e) {
+            responseJsonObject.addProperty("status", "failed");
+            responseJsonObject.addProperty("message", "recaptcha verificaton failed");
+            out.write(responseJsonObject.toString());
+            response.setStatus(200);
+            out.close();
+            return;
+        }
+
+
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
         /* This example only allows username/password to be test/test
         /  in the real project, you should talk to the database to verify username/password
         */
-        JsonObject responseJsonObject = new JsonObject();
         try(Connection conn = dataSource.getConnection()) {
+            StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
             String userQuery = "SELECT * FROM customers WHERE email = ?";
             PreparedStatement statement = conn.prepareStatement(userQuery);
             statement.setString(1, email);
@@ -50,7 +70,8 @@ public class LoginServlet extends HttpServlet {
             while(rs.next()) {
                 UserFound = true;
                 String queryPassword = rs.getString("password");
-                if (!queryPassword.equals(password)) {
+
+                if (!passwordEncryptor.checkPassword(password, queryPassword)) {
 
                     responseJsonObject.addProperty("message", "incorrect password");
                     responseJsonObject.addProperty("status", "failed");
