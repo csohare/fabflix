@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
 
 
 
@@ -36,7 +36,7 @@ public class SingleMovieServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         // Retrieve parameter id from url request.
-        String id = "'" + request.getParameter("id") + "'";
+        String id = request.getParameter("id");
 
         // The log message can be found in localhost log
         request.getServletContext().log("getting id: " + id);
@@ -47,7 +47,7 @@ public class SingleMovieServlet extends HttpServlet {
                     "FROM\n" +
                     "(SELECT m.id, title, year, director \n" +
                     "FROM movies as m\n" +
-                    "WHERE id = " + id + ") as m\n" +
+                    "WHERE id = ?) as m\n" +
                     "LEFT JOIN (SELECT name, genres.id, movieId FROM genres_in_movies as gim, genres WHERE  gim.genreId = genres.id) as mG\n" +
                     "ON mG.movieId = m.id\n" +
                     "LEFT JOIN (SELECT movieId, rating FROM ratings) as r\n" +
@@ -58,19 +58,21 @@ public class SingleMovieServlet extends HttpServlet {
                     "FROM\n" +
                     "(SELECT *\n" +
                     "FROM stars_in_movies\n" +
-                    "     WHERE movieId = " + id + ")as movieStars\n" +
+                    "     WHERE movieId = ?)as movieStars\n" +
                     "     Left Join (SELECT starId FROM stars_in_movies) as tmp\n" +
                     "     ON movieStars.starId = tmp.starId, stars\n" +
                     "     WHERE id = movieStars.starId\n" +
                     "     GROUP by movieStars.starId, name\n" +
                     "     ORDER by item_Count desc\n" +
                     ") as stars\n";
-            Statement statement = conn.createStatement();
-            ResultSet movieInfo = statement.executeQuery(movieQuery);
+            PreparedStatement movieStatement = conn.prepareStatement(movieQuery);
+            movieStatement.setString(1, id);
+            ResultSet movieInfo = movieStatement.executeQuery();
 
 
-            Statement starStatement = conn.createStatement();
-            ResultSet starInfo = starStatement.executeQuery(starQuery);
+            PreparedStatement starStatement = conn.prepareStatement(starQuery);
+            starStatement.setString(1, id);
+            ResultSet starInfo = starStatement.executeQuery();
             // id, title, year, starIds, starNames, genreIds, genreNames, rating
 
             JsonArray jsonArray = new JsonArray();
@@ -107,7 +109,6 @@ public class SingleMovieServlet extends HttpServlet {
                 jsonArray.add(jsonObject);
             }
             movieInfo.close();
-            statement.close();
 
             // Log to localhost log
             request.getServletContext().log("getting " + jsonArray.size() + " results");
