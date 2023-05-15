@@ -7,7 +7,7 @@ function handleLoginRequest(data) {
         window.location.replace("./metaData.html")
     }
     else {
-        errorMessage.text("Employee Not Found!")
+        errorMessage.text(data["message"]);
     }
 
 }

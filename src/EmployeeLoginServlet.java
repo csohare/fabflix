@@ -40,6 +40,20 @@ public class EmployeeLoginServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         JsonObject responseJsonObject = new JsonObject();
 
+        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+        System.out.println("recaptcha Response" + gRecaptchaResponse);
+
+        try{
+            VerifyRecaptcha.verify(gRecaptchaResponse);
+        }catch (Exception e) {
+            responseJsonObject.addProperty("status", "failed");
+            responseJsonObject.addProperty("message", "recaptcha verificaton failed");
+            out.write(responseJsonObject.toString());
+            response.setStatus(200);
+            out.close();
+            return;
+        }
+
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         /* This example only allows username/password to be test/test
@@ -52,8 +66,10 @@ public class EmployeeLoginServlet extends HttpServlet {
             employeeStatement.setString(2, password);
             ResultSet rs = employeeStatement.executeQuery();
             responseJsonObject.addProperty("status", "failed");
+            responseJsonObject.addProperty("message", "user not found");
             while(rs.next()) {
                 responseJsonObject.remove("status");
+                responseJsonObject.remove("message");
                 responseJsonObject.addProperty("status", "success");
                 request.getSession().setAttribute("employee", rs.getString("fullname"));
                 request.getSession().setAttribute("user", rs.getString("email"));
