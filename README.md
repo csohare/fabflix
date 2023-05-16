@@ -2,8 +2,9 @@
 s23-122b-team-14 created by GitHub Classroom
 
 
+https://github.com/UCI-Chenli-teaching/s23-122b-team-14/assets/84535553/15e57c10-c08b-4c74-87fc-37f9ebcaa5fb
 
-https://github.com/UCI-Chenli-teaching/s23-122b-team-14/assets/84535553/d18a02e5-c8c7-449d-8a85-e79b7a86d288
+
 CONTRIBUTIONS
 
 COLIN O'HARE: DASHBOARD DOM PARSER
