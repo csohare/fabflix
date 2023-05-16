@@ -31,8 +31,12 @@ function handleResult(resultData) {
         let sIds = resultData[i]["starIds"];
         let gNames = resultData[i]["genreNames"];
         let gIds = resultData[i]["genreIds"];
-        const starNames = sNames.split(",");
-        const starIds = sIds.split(",");
+        let starNames = null;
+        let starIds = null;
+        if(sIds != null) {
+            starNames = sNames.split(",");
+            starIds = sIds.split(",");
+        }
         const genreNames = gNames.split(",");
         const genreIds = gIds.split(",");
 
@@ -50,13 +54,15 @@ function handleResult(resultData) {
                 + genreNames[j] + " </a>";
         }
         rowHTML += "</th>";
-
-        rowHTML += "<th>";
-        for(let j = 0; j < starNames.length; ++j) {
-            rowHTML += "<a href='single-star.html?id=" + starIds[j] + "'>"
-                + starNames[j] + " </a>";
+        if(starNames != null) {
+            rowHTML += "<th>";
+            for (let j = 0; j < starNames.length; ++j) {
+                rowHTML += "<a href='single-star.html?id=" + starIds[j] + "'>"
+                    + starNames[j] + " </a>";
+            }
+            rowHTML += "</th>";
         }
-        rowHTML += "</th>";
+        else{rowHTML += "<th></th>";}
 
         let rating = resultData[i]["rating"] == null ? "N/A" : resultData[i]["rating"];
         rowHTML += "<th>" + rating + "</th>";
