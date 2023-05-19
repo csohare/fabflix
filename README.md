@@ -1,8 +1,7 @@
 # s23-122b-team-14
 s23-122b-team-14 created by GitHub Classroom
 
-
-https://github.com/UCI-Chenli-teaching/s23-122b-team-14/assets/84535553/15e57c10-c08b-4c74-87fc-37f9ebcaa5fb
+https://drive.google.com/file/d/1yRE506gG0qvr3MjVpuP_bPm4v5ODuymD/view?usp=share_link
 
 
 CONTRIBUTIONS
