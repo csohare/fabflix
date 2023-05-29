@@ -35,6 +35,7 @@ function populateTitles(){
 function handleLookup(query, doneCallBack) {
     if(query.length >= 3) {
         if(query in ft){
+            console.log("DATA FROM CACHE")
             handleSuccess(ft[query], query, doneCallBack);
             return;
         }
