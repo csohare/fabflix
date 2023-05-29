@@ -11,3 +11,7 @@
 .form_container {
     width:70%;
 }
+
+.autocomplete-selected {
+    background: #61A5E2;
+}

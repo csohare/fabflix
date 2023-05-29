@@ -65,8 +65,14 @@ public class MovieListServlet extends HttpServlet {
 
                 int pageSize = request.getParameter("pageSize") == null ? 25 : Integer.parseInt(request.getParameter("pageSize"));
                 int pageOffset = request.getParameter("pageOffset") == null ? 0 : Integer.parseInt(request.getParameter("pageOffset"));
-
-                if(request.getParameter("movieGenre") != null)  {
+                if(request.getParameter("fulltext") != null) {
+                    String fulltext = request.getParameter("fulltext");
+                    fulltext = genString(fulltext);
+                    statement.setString(1, fulltext);
+                    statement.setInt(2, pageSize);
+                    statement.setInt(3, pageOffset);
+                }
+                else if(request.getParameter("movieGenre") != null)  {
                     statement.setString(1, request.getParameter("movieGenre"));
                     statement.setInt(2, pageSize);
                     statement.setInt(3, pageOffset);
@@ -180,6 +186,13 @@ public class MovieListServlet extends HttpServlet {
                     "movies as m \n" +
                     "WHERE genreId = ? and m.id = movieId";
         }
+        if(request.getParameter("fulltext") != null) {
+            query = "SELECT m.id as movieId, title, year, director, rating, group_concat(mG.id) as genreIds, group_concat(name) as genreNames\n" +
+                    "FROM\n" +
+                    "(SELECT m.id, title, year, director \n" +
+                    "FROM movies as m \n" +
+                    "WHERE MATCH(title) AGAINST(? IN BOOLEAN MODE)\n";
+        }
         if(request.getParameter("movieTitle") != null) {
             String movieTitle = request.getParameter("movieTitle");
             if(movieTitle.equals("*")) {
@@ -263,5 +276,13 @@ public class MovieListServlet extends HttpServlet {
         }
 
         return query;
+    }
+    private String genString(String query) {
+        String[] tokens = query.split(" ");
+        for(int i = 0; i < tokens.length; i++) {
+            tokens[i] = "+" + tokens[i] + "*";
+            System.out.println(tokens[i]);
+        }
+        return String.join(" ", tokens);
     }
 }

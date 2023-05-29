@@ -82,6 +82,10 @@ function genURL(pSize) {
     if(pageSize == null)    {pageSize = "25";}
     if(pageOffset == null)  {pageOffset = "0";}
 
+    if(getParameterByName("fulltext") != null) {
+        let fulltext = getParameterByName('fulltext');
+        url += "fulltext=" + fulltext;
+    }
     if(getParameterByName('movieGenre') != null) {
         let movieGenre = getParameterByName('movieGenre');
         url += "movieGenre=" + movieGenre;

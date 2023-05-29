@@ -42,15 +42,17 @@ public class LoginServlet extends HttpServlet {
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
         System.out.println("recaptcha Response" + gRecaptchaResponse);
 
-        try{
-            VerifyRecaptcha.verify(gRecaptchaResponse);
-        }catch (Exception e) {
-            responseJsonObject.addProperty("status", "failed");
-            responseJsonObject.addProperty("message", "recaptcha verificaton failed");
-            out.write(responseJsonObject.toString());
-            response.setStatus(200);
-            out.close();
-            return;
+        if(request.getParameter("android") == null) {
+            try {
+                VerifyRecaptcha.verify(gRecaptchaResponse);
+            } catch (Exception e) {
+                responseJsonObject.addProperty("status", "failed");
+                responseJsonObject.addProperty("message", "recaptcha verificaton failed");
+                out.write(responseJsonObject.toString());
+                response.setStatus(200);
+                out.close();
+                return;
+            }
         }
 
 
@@ -61,6 +63,7 @@ public class LoginServlet extends HttpServlet {
         /  in the real project, you should talk to the database to verify username/password
         */
         try(Connection conn = dataSource.getConnection()) {
+                
             StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
             String userQuery = "SELECT * FROM customers WHERE email = ?";
             PreparedStatement statement = conn.prepareStatement(userQuery);

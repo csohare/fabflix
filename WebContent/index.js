@@ -31,8 +31,59 @@ function populateTitles(){
 
     titleTableBody.append(rowHTML);
 }
+function handleLookup(query, doneCallBack) {
+    if(query.length >= 3) {
+        console.log("LOOKING UP " + query);
+        $.ajax({
+            method : "GET",
+            url : "api/fulltext?query=" + encodeURIComponent(query),
+            success : function(data) {
+                handleSuccess(data, query, doneCallBack)
+            },
+            error : function(errorData) {
+                console.log("lookup ajax error");
+                console.log(errorData);
+            }
+        })
+    }
+}
+function handleSuccess(data, query, doneCallBack) {
+    let jsonData = JSON.parse(data);
+    console.log(jsonData);
+
+    doneCallBack({suggestions : jsonData});
+}
+
+function handleSelect(suggestion) {
+
+}
+
+$("#autocomplete").autocomplete({
+    lookup: function(query, doneCallBack) {
+        handleLookup(query, doneCallBack)
+    },
+    onSelect: function(suggestion) {
+        let url = window.location.origin + window.location.pathname + "single-movie.html?id=" + suggestion.data.id;
+        window.location.assign(url);
+    },
+    deferRequestBy: 500,
+    appendTo: "#results"
+
+});
+
+$("#autocomplete").keypress(function(event) {
+    switch (event.keyCode) {
+        case 13:
+            let fulltext = encodeURIComponent($(this).val());
+            let url = window.location.origin + window.location.pathname + "movieList.html?fulltext=" + fulltext + "&pageSize=25&pageOffset=0&sort=1";
+            console.log(url)
+            window.location.assign(url);
+    }
+});
+
 
 populateTitles();
+
 
 jQuery.ajax({
     url: "api/index",
