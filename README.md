@@ -1,13 +1,19 @@
 # s23-122b-team-14
 s23-122b-team-14 created by GitHub Classroom
 
-https://user-images.githubusercontent.com/84535553/235409280-9aed5b02-2a4a-450c-8628-7de4ac1758b4.mp4
+https://youtu.be/N5EgwSK8Cvk
 
-CONTRIBUTIONS:
 
-Colin O'Hare: MoviePages, Checkout, Search, Sort, Pagination
+CONTRIBUTIONS
 
-Lincoln Nguyen: Styling, Queries, Login
+COLIN O'HARE: DASHBOARD DOM PARSER
 
-Single Letter Title matches done by using "{Letter}%"
-All other matching done with "%{SearchTerm}%" To allow for substring matching.
+LINCOLN NGYUEN: HTTPS, ENCRYPTION, RECAPTCHA
+
+Use of hashtables within parser to check for duplicate entries in database
+Computing next available ID without use of database
+Use of batch queries
+
+[StarInserts.txt](https://github.com/UCI-Chenli-teaching/s23-122b-team-14/files/11483427/StarInserts.txt)
+[movieInserts.txt](https://github.com/UCI-Chenli-teaching/s23-122b-team-14/files/11483425/movieInserts.txt)
+[castInserts.txt](https://github.com/UCI-Chenli-teaching/s23-122b-team-14/files/11483426/castInserts.txt)
