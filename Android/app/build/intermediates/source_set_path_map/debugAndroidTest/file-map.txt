@@ -1,0 +1,5 @@
+edu.uci.ics.fabflixmobile.test.app-androidTest-0 /Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/build/generated/res/resValues/androidTest/debug
+edu.uci.ics.fabflixmobile.test.app-androidTest-1 /Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/build/generated/res/rs/androidTest/debug
+edu.uci.ics.fabflixmobile.test.app-mergeDebugAndroidTestResources-2 /Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
+edu.uci.ics.fabflixmobile.test.app-mergeDebugAndroidTestResources-3 /Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
+edu.uci.ics.fabflixmobile.test.app-merged_res-4 /Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/build/intermediates/merged_res/debugAndroidTest

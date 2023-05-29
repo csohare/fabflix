@@ -1,0 +1,97 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="edu.uci.ics.fabflixmobile"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="33"
+8-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml
+9        android:targetSdkVersion="33" />
+9-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml
+10    <!-- This line is needed to enable HTTP connection -->
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:5:5-67
+11-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:5:22-64
+12
+13    <permission
+13-->[androidx.core:core:1.9.0] /Users/colinohare/.gradle/caches/transforms-3/9ab8d72609b93b1e3c5897c605ac8364/transformed/core-1.9.0/AndroidManifest.xml:22:5-24:47
+14        android:name="edu.uci.ics.fabflixmobile.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+14-->[androidx.core:core:1.9.0] /Users/colinohare/.gradle/caches/transforms-3/9ab8d72609b93b1e3c5897c605ac8364/transformed/core-1.9.0/AndroidManifest.xml:23:9-81
+15        android:protectionLevel="signature" />
+15-->[androidx.core:core:1.9.0] /Users/colinohare/.gradle/caches/transforms-3/9ab8d72609b93b1e3c5897c605ac8364/transformed/core-1.9.0/AndroidManifest.xml:24:9-44
+16
+17    <uses-permission android:name="edu.uci.ics.fabflixmobile.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+17-->[androidx.core:core:1.9.0] /Users/colinohare/.gradle/caches/transforms-3/9ab8d72609b93b1e3c5897c605ac8364/transformed/core-1.9.0/AndroidManifest.xml:26:5-97
+17-->[androidx.core:core:1.9.0] /Users/colinohare/.gradle/caches/transforms-3/9ab8d72609b93b1e3c5897c605ac8364/transformed/core-1.9.0/AndroidManifest.xml:26:22-94
+18
+19    <application
+19-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:7:5-25:19
+20        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+20-->[androidx.core:core:1.9.0] /Users/colinohare/.gradle/caches/transforms-3/9ab8d72609b93b1e3c5897c605ac8364/transformed/core-1.9.0/AndroidManifest.xml:28:18-86
+21        android:debuggable="true"
+22        android:extractNativeLibs="false"
+23        android:icon="@mipmap/ic_launcher"
+23-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:8:9-43
+24        android:label="@string/app_name"
+24-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:9:9-41
+25        android:roundIcon="@mipmap/ic_launcher_round"
+25-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:10:9-54
+26        android:supportsRtl="true"
+26-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:11:9-35
+27        android:testOnly="true"
+28        android:theme="@style/Theme.MyApplication"
+28-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:12:9-51
+29        android:usesCleartextTraffic="true" >
+29-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:13:9-44
+30        <activity android:name="edu.uci.ics.fabflixmobile.ui.movielist.MovieListActivity" />
+30-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:14:9-68
+30-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:14:19-65
+31        <activity android:name="edu.uci.ics.fabflixmobile.ui.moviesearch.MovieSearchActivity" />
+31-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:15:9-72
+31-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:15:19-69
+32        <activity android:name="edu.uci.ics.fabflixmobile.ui.singlemovie.SingleMovieActivity" />
+32-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:16:9-72
+32-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:16:19-69
+33        <activity
+33-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:17:9-24:20
+34            android:name="edu.uci.ics.fabflixmobile.ui.login.LoginActivity"
+34-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:18:13-51
+35            android:exported="true" >
+35-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:19:13-36
+36            <intent-filter>
+36-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:20:13-23:29
+37                <action android:name="android.intent.action.MAIN" />
+37-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:21:17-69
+37-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:21:25-66
+38
+39                <category android:name="android.intent.category.LAUNCHER" />
+39-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:22:17-77
+39-->/Users/colinohare/Desktop/cs122b/projects/fabflix/Android/app/src/main/AndroidManifest.xml:22:27-74
+40            </intent-filter>
+41        </activity>
+42
+43        <provider
+43-->[androidx.emoji2:emoji2:1.2.0] /Users/colinohare/.gradle/caches/transforms-3/73abe0b323b9e45eb6d48789e74f41c0/transformed/emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
+44            android:name="androidx.startup.InitializationProvider"
+44-->[androidx.emoji2:emoji2:1.2.0] /Users/colinohare/.gradle/caches/transforms-3/73abe0b323b9e45eb6d48789e74f41c0/transformed/emoji2-1.2.0/AndroidManifest.xml:25:13-67
+45            android:authorities="edu.uci.ics.fabflixmobile.androidx-startup"
+45-->[androidx.emoji2:emoji2:1.2.0] /Users/colinohare/.gradle/caches/transforms-3/73abe0b323b9e45eb6d48789e74f41c0/transformed/emoji2-1.2.0/AndroidManifest.xml:26:13-68
+46            android:exported="false" >
+46-->[androidx.emoji2:emoji2:1.2.0] /Users/colinohare/.gradle/caches/transforms-3/73abe0b323b9e45eb6d48789e74f41c0/transformed/emoji2-1.2.0/AndroidManifest.xml:27:13-37
+47            <meta-data
+47-->[androidx.emoji2:emoji2:1.2.0] /Users/colinohare/.gradle/caches/transforms-3/73abe0b323b9e45eb6d48789e74f41c0/transformed/emoji2-1.2.0/AndroidManifest.xml:29:13-31:52
+48                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+48-->[androidx.emoji2:emoji2:1.2.0] /Users/colinohare/.gradle/caches/transforms-3/73abe0b323b9e45eb6d48789e74f41c0/transformed/emoji2-1.2.0/AndroidManifest.xml:30:17-75
+49                android:value="androidx.startup" />
+49-->[androidx.emoji2:emoji2:1.2.0] /Users/colinohare/.gradle/caches/transforms-3/73abe0b323b9e45eb6d48789e74f41c0/transformed/emoji2-1.2.0/AndroidManifest.xml:31:17-49
+50            <meta-data
+50-->[androidx.lifecycle:lifecycle-process:2.4.1] /Users/colinohare/.gradle/caches/transforms-3/ca29b3e243c7c9bf4050c53ae15f3b57/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:31:13-33:52
+51                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+51-->[androidx.lifecycle:lifecycle-process:2.4.1] /Users/colinohare/.gradle/caches/transforms-3/ca29b3e243c7c9bf4050c53ae15f3b57/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:32:17-78
+52                android:value="androidx.startup" />
+52-->[androidx.lifecycle:lifecycle-process:2.4.1] /Users/colinohare/.gradle/caches/transforms-3/ca29b3e243c7c9bf4050c53ae15f3b57/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:33:17-49
+53        </provider>
+54    </application>
+55
+56</manifest>
