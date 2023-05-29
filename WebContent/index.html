@@ -50,21 +50,15 @@
     <div class="my-4" style="position: relative">
         <h2 class="text-center">FullText Search</h2>
         <input type="text" id="autocomplete" class="autocomplete-searchbox form-control" placeholder="FullText">
-        <div id="results" style="position: absolute; z-index : 1"></div>
+        <div id="results"></div>
+        <div>
+            <h2>Browse by Movie Genre</h2>
+            <table class="table" id="genre-table">
+                <tbody id="genre-table-body"></tbody>
+            </table>
+        </div>
     </div>
-</div>
-
-<div class="container d-flex flex-column justify-content-center align-items-center vh-100">
-    <div class="mb-4">
-        <h2>Browse by Movie Genre</h2>
-        <table class="table" id="genre-table">
-            <tbody id="genre-table-body">
-
-            </tbody>
-        </table>
-    </div>
-
-    <div class="mb-4">
+    <div class="mb-4" style="position:relative;">
         <h2 class="text-center">Browse by Movie Title</h2>
         <table class="table" id="title-table">
             <tbody id="title-table-body">

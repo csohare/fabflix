@@ -15,3 +15,8 @@
 .autocomplete-selected {
     background: #61A5E2;
 }
+
+.autocomplete-suggestions {
+    z-index: 1 !important;
+    position: relative !important;
+}

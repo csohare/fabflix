@@ -1,5 +1,6 @@
 let genreTableBody = $('#genre-table-body');
 let titleTableBody = $('#title-table-body');
+const ft = {};
 
 function handleResult(resultData) {
     let rowHTML = "<tr>"
@@ -33,6 +34,10 @@ function populateTitles(){
 }
 function handleLookup(query, doneCallBack) {
     if(query.length >= 3) {
+        if(query in ft){
+            handleSuccess(ft[query], query, doneCallBack);
+            return;
+        }
         console.log("LOOKING UP " + query);
         $.ajax({
             method : "GET",
@@ -48,6 +53,7 @@ function handleLookup(query, doneCallBack) {
     }
 }
 function handleSuccess(data, query, doneCallBack) {
+    ft[query] = data;
     let jsonData = JSON.parse(data);
     console.log(jsonData);
 
